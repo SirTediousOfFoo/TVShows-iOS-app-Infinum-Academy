@@ -33,7 +33,7 @@
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                                 <connections>
-                                    <action selector="buttonPressed:" destination="8Mn-M3-tkt" eventType="touchUpInside" id="pRc-m6-XOc"/>
+                                    <action selector="buttonPressed" destination="8Mn-M3-tkt" eventType="touchUpInside" id="Pfe-aL-qeZ"/>
                                 </connections>
                             </button>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="UW4-J2-OIw">

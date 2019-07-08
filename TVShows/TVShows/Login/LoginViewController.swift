@@ -8,35 +8,43 @@
 
 import UIKit
 
-class LoginViewController: UIViewController {
+final class LoginViewController: UIViewController {
 
-    @IBOutlet weak var label: UILabel!
-    @IBOutlet weak var button: UIButton!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    //MARK :- Outlets
     
-    var numberClicks: Int = 0
+    @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var button: UIButton!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
+    //MARK :- Properties
     
+    private var numberOfClicks: Int = 0
+    
+    //MARK :- Lifecycle methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        button.layer.cornerRadius = 20
-        activityIndicator.startAnimating()
-        Timer.scheduledTimer(timeInterval: TimeInterval(3), target: activityIndicator!, selector: #selector(UIActivityIndicatorView.stopAnimating), userInfo: nil, repeats: false)
-        // Do any additional setup after loading the view.
+        configureUI()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.activityIndicator.stopAnimating()
+        }
     }
     
-
-    @IBAction func buttonPressed(_ sender: Any) {
-        numberClicks+=1
-        if numberClicks%2 == 1 {
+    private func configureUI() {
+        button.layer.cornerRadius = 20
+        activityIndicator.startAnimating()
+    }
+    
+    //MARK :- Actions
+    
+    @IBAction private func buttonPressed() {
+        numberOfClicks += 1
+        if numberOfClicks.isMultiple(of: 2) {
+            activityIndicator.stopAnimating()
+        } else {
             activityIndicator.startAnimating()
         }
-        else
-        {
-            activityIndicator.stopAnimating()
-        }
-        label.text = "\(numberClicks)"
+        label.text = "\(numberOfClicks)"
     }
     /*
     // MARK: - Navigation
