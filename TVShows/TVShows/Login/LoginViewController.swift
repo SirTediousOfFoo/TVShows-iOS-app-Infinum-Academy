@@ -12,40 +12,36 @@ final class LoginViewController: UIViewController {
 
     //MARK :- Outlets
     
-    @IBOutlet private weak var label: UILabel!
-    @IBOutlet private weak var button: UIButton!
-    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var rememberMeCheckboxButton: UIButton!
+    @IBOutlet weak var logInButton: UIButton!
     
     //MARK :- Properties
     
-    private var numberOfClicks: Int = 0
+    var rememberMeIsSelected: Bool = false
     
     //MARK :- Lifecycle methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.activityIndicator.stopAnimating()
-        }
     }
     
     private func configureUI() {
-        button.layer.cornerRadius = 20
-        activityIndicator.startAnimating()
+        logInButton.layer.cornerRadius = 10
     }
     
     //MARK :- Actions
-    
-    @IBAction private func buttonPressed() {
-        numberOfClicks += 1
-        if numberOfClicks.isMultiple(of: 2) {
-            activityIndicator.stopAnimating()
-        } else {
-            activityIndicator.startAnimating()
+    @IBAction func checkboxStateChanged() {
+        if rememberMeIsSelected { //I hope this is a good way of doing these
+            rememberMeCheckboxButton.setImage(UIImage(named: "ic-checkbox-empty"), for: UIControl.State.normal)
+            rememberMeIsSelected = false
         }
-        label.text = "\(numberOfClicks)"
+        else{
+            rememberMeCheckboxButton.setImage(UIImage(named: "ic-checkbox-filled"), for: UIControl.State.normal)
+            rememberMeIsSelected = true
+        }
     }
+    
     /*
     // MARK: - Navigation
 
