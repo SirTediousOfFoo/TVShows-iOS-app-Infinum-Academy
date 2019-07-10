@@ -12,12 +12,12 @@ final class LoginViewController: UIViewController {
 
     //MARK :- Outlets
     
-    @IBOutlet weak var rememberMeCheckboxButton: UIButton!
-    @IBOutlet weak var logInButton: UIButton!
+    @IBOutlet private weak var rememberMeCheckboxButton: UIButton!
+    @IBOutlet private weak var logInButton: UIButton!
     
     //MARK :- Properties
     
-    var rememberMeIsSelected: Bool = false
+    private var rememberMeIsSelected: Bool = false
     
     //MARK :- Lifecycle methods
 
@@ -31,7 +31,8 @@ final class LoginViewController: UIViewController {
     }
     
     //MARK :- Actions
-    @IBAction func checkboxStateChanged() {
+    
+    @IBAction private func checkboxStateChanged() {
         if rememberMeIsSelected { //I hope this is a good way of doing these
             rememberMeCheckboxButton.setImage(UIImage(named: "ic-checkbox-empty"), for: UIControl.State.normal)
             rememberMeIsSelected = false
