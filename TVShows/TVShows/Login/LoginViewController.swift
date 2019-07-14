@@ -15,10 +15,12 @@ final class LoginViewController: UIViewController {
     @IBOutlet private weak var rememberMeCheckboxButton: UIButton!
     @IBOutlet private weak var logInButton: UIButton!
     @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var mainStackView: UIStackView!
     
     //MARK :- Properties
     
     private var rememberMeIsSelected: Bool = false
+    private var topInsetValue: CGFloat = 0
     
     //MARK :- Lifecycle methods
 
@@ -28,6 +30,11 @@ final class LoginViewController: UIViewController {
         keyboardEventHappened()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setTopInsetValue()
+    }
+    
     private func configureUI() {
         logInButton.layer.cornerRadius = 10
         //Set up a tap listener that dismisses the keyboard upon tapping outside text fields
@@ -35,7 +42,14 @@ final class LoginViewController: UIViewController {
             target: self.view,
             action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false
-        self.view.addGestureRecognizer(tap)
+        view.addGestureRecognizer(tap)
+    }
+    
+    //Doing this keeps the content of the scroll view centered on all devices
+    private func setTopInsetValue()
+    {
+        topInsetValue = (scrollView.frame.height - mainStackView.frame.height)/2
+        scrollView.contentInset.top = topInsetValue
     }
     
     //MARK :- Actions
@@ -67,6 +81,7 @@ final class LoginViewController: UIViewController {
                     let keyboardRectangle = keyboardFrame.cgRectValue
                     let keyboardHeight = keyboardRectangle.height
                     self?.scrollView.contentInset.bottom = keyboardHeight
+                    self?.scrollView.contentInset.top = 0
                 }
             }
         NotificationCenter
@@ -77,7 +92,8 @@ final class LoginViewController: UIViewController {
                 queue: .main
             ) { [weak self] notification in
                 // keyboard is about to hide, handle UIScrollView contentInset, e.g.
-                self?.scrollView.contentInset = .zero
+                self?.scrollView.contentInset.bottom = .zero
+                self?.scrollView.contentInset.top = self!.topInsetValue //This should be a good use of force unwrap since there should never be a nil
             }
         
     }
