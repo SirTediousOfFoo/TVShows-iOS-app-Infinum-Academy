@@ -48,14 +48,20 @@ final class LoginViewController: UIViewController {
     //Doing this keeps the content of the scroll view centered on all devices
     private func setTopInsetValue()
     {
-        topInsetValue = (scrollView.frame.height - mainStackView.frame.height)/2
-        scrollView.contentInset.top = topInsetValue
+        if mainStackView.frame.height < scrollView.frame.height //Content is smaller than scrollView so it needs to be centered on screen
+        {
+            topInsetValue = (scrollView.frame.height - mainStackView.frame.height)/2
+            scrollView.contentInset.top = topInsetValue
+        }
+        else { //Content is bigger than scrollView so we remove the inset
+            scrollView.contentInset.top = 0
+        }
     }
     
     //MARK :- Actions
     
     @IBAction private func checkboxStateChanged() {
-        if rememberMeIsSelected { //I hope this is a good way of doing these
+        if rememberMeIsSelected { //I hope this is a good way of doing these comparisons and working with the checkbox
             rememberMeCheckboxButton.setImage(
                 UIImage(named: "ic-checkbox-empty"),
                 for: UIControl.State.normal)
