@@ -10,12 +10,24 @@ import UIKit
 
 class HomeViewController: UIViewController {
 
+    //MARK: - Variables
+    
+    var user: User?
+    
+    //MARK: - Outlets
+    
+    @IBOutlet weak var myLabel: UILabel!
+    
+    //MARK: - Lifetime functions
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        if let unwrappedUser = user?.email
+        {
+            myLabel.text = "\(unwrappedUser)"
+        }
         // Do any additional setup after loading the view.
     }
-    
 
     /*
     // MARK: - Navigation

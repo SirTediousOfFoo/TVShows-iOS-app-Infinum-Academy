@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8Mn-M3-tkt">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ATx-jz-2Pe">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -13,13 +13,13 @@
         <!--Login View Controller-->
         <scene sceneID="2mA-mO-Lg8">
             <objects>
-                <viewController id="8Mn-M3-tkt" customClass="LoginViewController" customModule="TVShows" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="8Mn-M3-tkt" customClass="LoginViewController" customModule="TVShows" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="GBn-PQ-buy">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" contentInsetAdjustmentBehavior="always" translatesAutoresizingMaskIntoConstraints="NO" id="rCi-0Q-PKA">
-                                <rect key="frame" x="5" y="30" width="310" height="533"/>
+                                <rect key="frame" x="5" y="74" width="310" height="489"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="vQr-qM-44o">
                                         <rect key="frame" x="0.0" y="0.0" width="310" height="436"/>
@@ -107,6 +107,9 @@
                                                 <state key="normal" title="LOG IN">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="onLogin" destination="8Mn-M3-tkt" eventType="touchUpInside" id="kGl-gZ-g7T"/>
+                                                </connections>
                                             </button>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="KCP-fz-N7O">
                                                 <rect key="frame" x="0.0" y="376" width="310" height="60"/>
@@ -129,6 +132,9 @@
                                                         <state key="normal" title="Create an account">
                                                             <color key="titleColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
                                                         </state>
+                                                        <connections>
+                                                            <action selector="onAccountCreation" destination="8Mn-M3-tkt" eventType="touchUpInside" id="Cti-eu-RH9"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                             </stackView>
@@ -154,16 +160,37 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="OEl-D6-GxO"/>
                     </view>
+                    <navigationItem key="navigationItem" id="d4w-6E-pNT"/>
                     <connections>
                         <outlet property="logInButton" destination="DQO-ic-rnv" id="Vsk-eZ-NeR"/>
                         <outlet property="mainStackView" destination="vQr-qM-44o" id="1b1-n8-7V3"/>
+                        <outlet property="passwordTextField" destination="2o7-pp-jdG" id="Ou5-Tl-ZXN"/>
                         <outlet property="rememberMeCheckboxButton" destination="eE9-CT-M3F" id="O23-PE-Nqn"/>
                         <outlet property="scrollView" destination="rCi-0Q-PKA" id="l9j-KA-46R"/>
+                        <outlet property="usernameTextField" destination="b0f-Dd-Xfe" id="9Wc-mN-1Mo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RPr-me-nPx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-82.608695652173921" y="-16.071428571428569"/>
+            <point key="canvasLocation" x="1391" y="3"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="uxd-Yo-Hfh">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ATx-jz-2Pe" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="g9j-HF-T2s">
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="8Mn-M3-tkt" kind="relationship" relationship="rootViewController" id="2oZ-DH-hsJ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Eu7-qy-zhq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="498.75" y="3.1690140845070425"/>
         </scene>
     </scenes>
     <resources>
