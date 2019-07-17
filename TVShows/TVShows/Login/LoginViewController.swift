@@ -27,13 +27,14 @@ final class LoginViewController: UIViewController {
     
     private var rememberMeIsSelected: Bool = false
     private var topInsetValue: CGFloat = 0
-    
+    private var notificaionTokens: [NSObjectProtocol] = []
+
     //MARK :- Lifecycle methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        keyboardEventHappened()
+        handleKeyboardEvents()
     }
     
     override func viewDidLayoutSubviews() {
@@ -56,9 +57,12 @@ final class LoginViewController: UIViewController {
         view.addGestureRecognizer(tap)
     }
     
+    deinit {
+        notificaionTokens.forEach(NotificationCenter.default.removeObserver)
+    }
+    
     //Doing this keeps the content of the scroll view centered on all devices
-    private func setTopInsetValue()
-    {
+    private func setTopInsetValue() {
         if mainStackView.frame.height < scrollView.frame.height //Content is smaller than scrollView so it needs to be centered on screen
         {
             topInsetValue = (scrollView.frame.height - mainStackView.frame.height)/2
@@ -72,40 +76,24 @@ final class LoginViewController: UIViewController {
     //MARK :- Actions
     
     @IBAction private func checkboxStateChanged() {
-        if rememberMeIsSelected { //I hope this is a good way of doing these comparisons and working with the checkbox
-            UIView.animate(withDuration: 0.5) {
-                self.rememberMeCheckboxButton.setImage(
-                    UIImage(named: "ic-checkbox-empty"),
-                    for: UIControl.State.normal)
-            }
-            rememberMeIsSelected = false
-        }
-        else{
-            UIView.animate(withDuration: 0.5) {
-                self.rememberMeCheckboxButton.setImage(
-                    UIImage(named: "ic-checkbox-filled"),
-                    for: UIControl.State.normal)
-            }
-            rememberMeIsSelected = true
-        }
+        rememberMeCheckboxButton.isSelected.toggle()
     }
     
-    private func keyboardEventHappened() {
-        NotificationCenter
+    private func handleKeyboardEvents() {
+        let willShowToken = NotificationCenter
             .default
             .addObserver(
                 forName: UIResponder.keyboardWillShowNotification,
                 object: nil,
                 queue: .main
             ) { [weak self] notification in
-                if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-                    let keyboardRectangle = keyboardFrame.cgRectValue
-                    let keyboardHeight = keyboardRectangle.height
-                    self?.scrollView.contentInset.bottom = keyboardHeight
-                    self?.scrollView.contentInset.top = 0
-                }
+                guard let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+                let keyboardRectangle = keyboardFrame.cgRectValue
+                let keyboardHeight = keyboardRectangle.height
+                self?.scrollView.contentInset.bottom = keyboardHeight
+                self?.scrollView.contentInset.top = 0
             }
-        NotificationCenter
+        let willHideToken = NotificationCenter
             .default
             .addObserver(
                 forName: UIResponder.keyboardWillHideNotification,
@@ -114,13 +102,15 @@ final class LoginViewController: UIViewController {
             ) { [weak self] notification in
                 // keyboard is about to hide, handle UIScrollView contentInset, e.g.
                 self?.scrollView.contentInset.bottom = .zero
-                self?.scrollView.contentInset.top = self!.topInsetValue //This should be a good use of force unwrap since there should never be a nil
+                guard let topInsetValue = self?.topInsetValue else { return }
+                self?.scrollView.contentInset.top = topInsetValue
             }
+        notificaionTokens.append(willShowToken)
+        notificaionTokens.append(willHideToken)
     }
 
     @IBAction func onLogin() {
-        if let userEmail = usernameTextField.text, let userPassword = passwordTextField.text
-        {
+        if let userEmail = usernameTextField.text, let userPassword = passwordTextField.text {
                 SVProgressHUD.show()
             //TODO: - Add "remember me" functionality
                 firstly{
@@ -137,11 +127,9 @@ final class LoginViewController: UIViewController {
         }
     }
     
-    @IBAction func onAccountCreation() {
-        if let userEmail = usernameTextField.text, let userPassword = passwordTextField.text
-        {
-            if userEmail.isValidEmail(), userPassword.isEmpty == false //We want users to log in using an actual mail and password
-            {
+    @IBAction func onAccountCreation() { //The API does check on the validity of inputs but if the call can be skipped I believe it should
+        if let userEmail = usernameTextField.text, let userPassword = passwordTextField.text {
+            if userEmail.isValidEmail(), userPassword.isEmpty == false {
                 SVProgressHUD.show()
 
                 firstly{
@@ -153,15 +141,11 @@ final class LoginViewController: UIViewController {
                     }.done{ _ in //This is clearly wrong but I've no idea how to do it and there were no consultations free for this week :(
                         self.onLogin()
                     }.catch{ error in
-                        SVProgressHUD.showError(withStatus: "\(error.localizedDescription)")
+                        print("\(error.localizedDescription)")
                 }
-            }
-            else if userEmail.isValidEmail() == false
-            {
+            } else if userEmail.isValidEmail() == false { //Probably bad but i like it
                 SVProgressHUD.showError(withStatus: "Please enter a valid e-mail")
-            }
-            else if userPassword.isEmpty
-            {
+            } else if userPassword.isEmpty {
                 SVProgressHUD.showError(withStatus: "Password can't be empty")
             }
         }
@@ -180,8 +164,13 @@ final class LoginViewController: UIViewController {
 
 extension String {
     func isValidEmail() -> Bool {
-        let regex = try! NSRegularExpression(pattern: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}", options: .caseInsensitive)
-        return regex.firstMatch(in: self, options: [], range: NSRange(location: 0, length: count)) != nil
+        let regex = try! NSRegularExpression(
+            pattern: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}",
+            options: .caseInsensitive)
+        return regex.firstMatch(
+            in: self,
+            options: [],
+            range: NSRange(location: 0, length: count)) != nil
     }
 }
 
@@ -216,11 +205,13 @@ private extension LoginViewController{
     }
     
     private func alamofireLoginUserWith(email: String, password: String) -> Promise<LoginData>{
+        
         let parameters: [String: String] = [
             "email": email,
             "password": password
         ]
-        return Promise{ promise in
+        
+        return Promise { promise in
             Alamofire
                 .request(
                     "https://api.infinum.academy/api/users/sessions",

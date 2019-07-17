@@ -82,6 +82,7 @@
                                                         </constraints>
                                                         <fontDescription key="fontDescription" type="system" pointSize="7"/>
                                                         <state key="normal" image="ic-checkbox-empty"/>
+                                                        <state key="selected" image="ic-checkbox-filled"/>
                                                         <connections>
                                                             <action selector="checkboxStateChanged" destination="8Mn-M3-tkt" eventType="touchUpInside" id="1Wm-K9-AOR"/>
                                                         </connections>
@@ -195,6 +196,7 @@
     </scenes>
     <resources>
         <image name="ic-checkbox-empty" width="24" height="24"/>
+        <image name="ic-checkbox-filled" width="24" height="24"/>
         <image name="login-logo" width="75" height="80"/>
     </resources>
 </document>
