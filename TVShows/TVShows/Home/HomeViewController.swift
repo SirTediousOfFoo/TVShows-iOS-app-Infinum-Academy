@@ -10,10 +10,6 @@ import UIKit
 
 class HomeViewController: UIViewController {
 
-    //MARK: - Variables
-    
-    var user: User?
-    
     //MARK: - Outlets
     
     @IBOutlet weak var myLabel: UILabel!
@@ -22,10 +18,6 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let unwrappedUser = user?.email
-        {
-            myLabel.text = "\(unwrappedUser)"
-        }
         // Do any additional setup after loading the view.
     }
 

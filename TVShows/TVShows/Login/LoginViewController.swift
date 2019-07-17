@@ -119,49 +119,69 @@ final class LoginViewController: UIViewController {
     }
 
     @IBAction func onLogin() {
-        
-        SVProgressHUD.show()
-        
-        firstly{
-            alamofireLoginUserWith(
-                email: usernameTextField.text!,
-                password: passwordTextField.text!)
-            }.ensure {
-                SVProgressHUD.dismiss()
-            }.done{ user in
-                self.navigateToHomeScene(_user: user)
-            }.catch{ error in
-                SVProgressHUD.showError(withStatus: "\(error)")
+        if let userEmail = usernameTextField.text, let userPassword = passwordTextField.text
+        {
+                SVProgressHUD.show()
+            //TODO: - Add "remember me" functionality
+                firstly{
+                    alamofireLoginUserWith(
+                        email: userEmail,
+                        password: userPassword)
+                    }.ensure {
+                        SVProgressHUD.dismiss()
+                    }.done{ token in
+                        self.navigateToHomeScene()
+                    }.catch{ error in
+                        print("\(error.localizedDescription)")
+                }
         }
-        
     }
     
     @IBAction func onAccountCreation() {
-        
-        SVProgressHUD.show()
-        
-        firstly{
-            alamofireRegisterUserWith(
-                email: usernameTextField.text!,
-                password: passwordTextField.text!)
-            }.ensure {
-                SVProgressHUD.dismiss()
-            }.done{ user in
-                self.navigateToHomeScene(_user: user)
-            }.catch{ error in
-                SVProgressHUD.showError(withStatus: "\(error)")
+        if let userEmail = usernameTextField.text, let userPassword = passwordTextField.text
+        {
+            if userEmail.isValidEmail(), userPassword.isEmpty == false //We want users to log in using an actual mail and password
+            {
+                SVProgressHUD.show()
+
+                firstly{
+                    alamofireRegisterUserWith(
+                        email: userEmail,
+                        password: userPassword)
+                    }.ensure {
+                        SVProgressHUD.dismiss()
+                    }.done{ _ in //This is clearly wrong but I've no idea how to do it and there were no consultations free for this week :(
+                        self.onLogin()
+                    }.catch{ error in
+                        SVProgressHUD.showError(withStatus: "\(error.localizedDescription)")
+                }
+            }
+            else if userEmail.isValidEmail() == false
+            {
+                SVProgressHUD.showError(withStatus: "Please enter a valid e-mail")
+            }
+            else if userPassword.isEmpty
+            {
+                SVProgressHUD.showError(withStatus: "Password can't be empty")
+            }
         }
     }
 
     //MARK: - Navigation
     
-    private func navigateToHomeScene(_user: User?) {
-        
+    private func navigateToHomeScene() {
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
-        
         let viewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-        viewController.user = _user
         navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+//MARK: - Helper functions
+
+extension String {
+    func isValidEmail() -> Bool {
+        let regex = try! NSRegularExpression(pattern: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}", options: .caseInsensitive)
+        return regex.firstMatch(in: self, options: [], range: NSRange(location: 0, length: count)) != nil
     }
 }
 
@@ -195,7 +215,7 @@ private extension LoginViewController{
         }
     }
     
-    private func alamofireLoginUserWith(email: String, password: String) -> Promise<User>{
+    private func alamofireLoginUserWith(email: String, password: String) -> Promise<LoginData>{
         let parameters: [String: String] = [
             "email": email,
             "password": password
@@ -208,10 +228,10 @@ private extension LoginViewController{
                     parameters: parameters,
                     encoding: JSONEncoding.default)
                 .validate()
-                .responseJSON { dataResponse in
+                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { (dataResponse: DataResponse<LoginData>) in
                     switch dataResponse.result {
-                    case .success(let response):
-                        SVProgressHUD.showSuccess(withStatus: "\(response)")
+                    case .success(let token):
+                        promise.fulfill(token)
                     case .failure(let error):
                         SVProgressHUD.showError(withStatus: "\(error)")
                     }
