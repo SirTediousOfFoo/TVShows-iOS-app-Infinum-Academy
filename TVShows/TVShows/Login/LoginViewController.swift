@@ -110,44 +110,74 @@ final class LoginViewController: UIViewController {
     }
 
     @IBAction func onLogin() {
-        if let userEmail = usernameTextField.text, let userPassword = passwordTextField.text {
-                SVProgressHUD.show()
-            //TODO: - Add "remember me" functionality
-                firstly{
-                    alamofireLoginUserWith(
-                        email: userEmail,
-                        password: userPassword)
-                    }.ensure {
-                        SVProgressHUD.dismiss()
-                    }.done{ token in
-                        self.navigateToHomeScene()
-                    }.catch{ error in
-                        print("\(error.localizedDescription)")
-                }
+
+        guard let userEmail = usernameTextField.text, let userPassword = passwordTextField.text else { return }
+        
+        let parameters: [String: String] = [
+            "email": userEmail,
+            "password": userPassword
+        ]
+        
+        SVProgressHUD.show()
+        //TODO: - Add "remember me" functionality
+        firstly{
+            APIManager.request(
+                LoginData.self,
+                path: "https://api.infinum.academy/api/users/sessions",
+                method: .post,
+                parameters: parameters,
+                keyPath: "data",
+                encoding: JSONEncoding.default,
+                decoder: JSONDecoder())
+            }.ensure {
+                SVProgressHUD.dismiss()
+            }.done { token in
+                self.navigateToHomeScene()
+            }.catch { error in
+                print("\(error.localizedDescription)")
         }
     }
     
     @IBAction func onAccountCreation() { //The API does check on the validity of inputs but if the call can be skipped I believe it should
-        if let userEmail = usernameTextField.text, let userPassword = passwordTextField.text {
-            if userEmail.isValidEmail(), userPassword.isEmpty == false {
-                SVProgressHUD.show()
-
-                firstly{
-                    alamofireRegisterUserWith(
-                        email: userEmail,
-                        password: userPassword)
-                    }.ensure {
-                        SVProgressHUD.dismiss()
-                    }.done{ _ in //This is clearly wrong but I've no idea how to do it and there were no consultations free for this week :(
-                        self.onLogin()
-                    }.catch{ error in
-                        print("\(error.localizedDescription)")
-                }
-            } else if userEmail.isValidEmail() == false { //Probably bad but i like it
-                SVProgressHUD.showError(withStatus: "Please enter a valid e-mail")
-            } else if userPassword.isEmpty {
-                SVProgressHUD.showError(withStatus: "Password can't be empty")
+        guard let userEmail = usernameTextField.text, let userPassword = passwordTextField.text else { return }
+        if userEmail.isValidEmail(), !userPassword.isEmpty {
+            
+            SVProgressHUD.show()
+            
+            let parameters: [String: String] = [
+                "email": userEmail,
+                "password": userPassword
+            ]
+            
+            firstly {
+                APIManager.request(
+                    User.self,
+                    path: "https://api.infinum.academy/api/users",
+                    method: .post,
+                    parameters: parameters,
+                    keyPath: "data",
+                    encoding: JSONEncoding.default,
+                    decoder: JSONDecoder())
+                }.then { user -> Promise<LoginData> in
+                    return APIManager.request(
+                        LoginData.self,
+                        path: "https://api.infinum.academy/api/users/sessions",
+                        method: .post,
+                        parameters: parameters,
+                        keyPath: "data",
+                        encoding: JSONEncoding.default,
+                        decoder: JSONDecoder())
+                }.ensure {
+                    SVProgressHUD.dismiss()
+                }.done { token in
+                    self.navigateToHomeScene()
+                }.catch{ error in
+                    print("\(error.localizedDescription)")
             }
+        } else if userEmail.isValidEmail() == false { //Probably bad but i like it
+            SVProgressHUD.showError(withStatus: "Please enter a valid e-mail")
+        } else if userPassword.isEmpty {
+            SVProgressHUD.showError(withStatus: "Password can't be empty")
         }
     }
 
@@ -172,62 +202,4 @@ extension String {
             options: [],
             range: NSRange(location: 0, length: count)) != nil
     }
-}
-
-//MARK: - API calls
-
-private extension LoginViewController{
-    
-    private func alamofireRegisterUserWith(email: String, password: String) -> Promise<User> {
-        
-        let parameters: [String: String] = [
-            "email": email,
-            "password": password
-        ]
-        
-        return Promise { promise in
-            Alamofire
-                .request(
-                    "https://api.infinum.academy/api/users",
-                    method: .post,
-                    parameters: parameters,
-                    encoding: JSONEncoding.default)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { (response: DataResponse<User>) in
-                    switch response.result {
-                    case .success(let user):
-                        promise.fulfill(user)
-                    case .failure(let error):
-                        promise.reject(error)
-                    }
-            }
-        }
-    }
-    
-    private func alamofireLoginUserWith(email: String, password: String) -> Promise<LoginData>{
-        
-        let parameters: [String: String] = [
-            "email": email,
-            "password": password
-        ]
-        
-        return Promise { promise in
-            Alamofire
-                .request(
-                    "https://api.infinum.academy/api/users/sessions",
-                    method: .post,
-                    parameters: parameters,
-                    encoding: JSONEncoding.default)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { (dataResponse: DataResponse<LoginData>) in
-                    switch dataResponse.result {
-                    case .success(let token):
-                        promise.fulfill(token)
-                    case .failure(let error):
-                        SVProgressHUD.showError(withStatus: "\(error)")
-                    }
-            }
-        }
-    }
-    
 }
