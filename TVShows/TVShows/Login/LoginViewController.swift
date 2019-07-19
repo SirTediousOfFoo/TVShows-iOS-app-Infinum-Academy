@@ -32,6 +32,7 @@ final class LoginViewController: UIViewController {
         title: "Login failed",
         message: "Something went wrong",
         preferredStyle: .alert)
+    private let userDefaults = UserDefaults.standard
     
     //MARK :- Lifecycle methods
 
@@ -119,8 +120,35 @@ final class LoginViewController: UIViewController {
         notificaionTokens.append(willHideToken)
     }
 
-    @IBAction func onLogin() {
+    //MARK: - Navigation
+    
+    private func navigateToHomeScene(loginData: LoginData) {
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let homeViewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
+        homeViewController.userData = loginData
+        navigationController?.pushViewController(homeViewController, animated: true)
+    }
+}
 
+//MARK: - Helper functions
+
+extension String {
+    func isValidEmail() -> Bool {
+        let regex = try! NSRegularExpression(
+            pattern: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}",
+            options: .caseInsensitive)
+        return regex.firstMatch(
+            in: self,
+            options: [],
+            range: NSRange(location: 0, length: count)) != nil
+    }
+}
+
+//MARK: - User authentication functions
+
+extension LoginViewController {
+    @IBAction func onLogin() {
+        
         guard let userEmail = usernameTextField.text, let userPassword = passwordTextField.text else { return }
         
         let parameters: [String: String] = [
@@ -130,7 +158,7 @@ final class LoginViewController: UIViewController {
         
         SVProgressHUD.show()
         //TODO: - Add "remember me" functionality
-        //      Locally store user token once generated and first check if the token is valid I guess?
+        //      Locally store user token once generated and first check if the token is valid I guess? Not sure how to check token against the web service sadly.
         firstly{
             APIManager.request(
                 LoginData.self,
@@ -196,28 +224,5 @@ final class LoginViewController: UIViewController {
             alertController.message = "You must enter a password"
             self.present(alertController, animated: true, completion: nil)
         }
-    }
-
-    //MARK: - Navigation
-    
-    private func navigateToHomeScene(loginData: LoginData) {
-        let storyboard = UIStoryboard(name: "Home", bundle: nil)
-        let homeViewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-        homeViewController.userData = loginData
-        navigationController?.pushViewController(homeViewController, animated: true)
-    }
-}
-
-//MARK: - Helper functions
-
-extension String {
-    func isValidEmail() -> Bool {
-        let regex = try! NSRegularExpression(
-            pattern: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}",
-            options: .caseInsensitive)
-        return regex.firstMatch(
-            in: self,
-            options: [],
-            range: NSRange(location: 0, length: count)) != nil
     }
 }

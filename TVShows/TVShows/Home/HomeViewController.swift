@@ -32,6 +32,15 @@ final class HomeViewController: UIViewController{
         self.title = "Shows"
     }
 
+    //I did this in the prevoious view, and it hides the navbar for this one too but I've put
+    //the function in this one as well for redundancy's sake, I also don't know if it's bad
+    //praxis that I put the Home screen in a separate storyboard which is what I did here.
+    //Good thing it's an easy fix so I'll leave it here for now.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     func getShowsList(userData: LoginData?) {
         
         guard let token = userData?.token else { return }
@@ -91,7 +100,7 @@ extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
-        let deleteAction = UIContextualAction(style: .normal, title:  "Delete", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+        let deleteAction = UIContextualAction(style: .destructive, title:  "Delete show", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             
             print("Deleting \(self.showsList[indexPath.row])")
 
