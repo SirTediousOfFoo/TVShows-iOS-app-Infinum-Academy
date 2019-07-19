@@ -23,14 +23,14 @@ class APIManager {
                     encoding: encoding)
                 .validate()
                 .responseDecodableObject(
-                keyPath: keyPath,
-                decoder: JSONDecoder()) { (response: DataResponse<T>) in
-                    switch response.result {
-                    case .success(let model):
-                        promise.fulfill(model)
-                    case .failure(let error):
-                        promise.reject(error)
-                    }
+                    keyPath: keyPath,
+                    decoder: decoder) { (response: DataResponse<T>) in
+                        switch response.result {
+                        case .success(let model):
+                            promise.fulfill(model)
+                        case .failure(let error):
+                            promise.reject(error)
+                        }
             }
         }
     }

@@ -28,7 +28,11 @@ final class LoginViewController: UIViewController {
     private var rememberMeIsSelected: Bool = false
     private var topInsetValue: CGFloat = 0
     private var notificaionTokens: [NSObjectProtocol] = []
-
+    private var alertController = UIAlertController.init(
+        title: "Login failed",
+        message: "Something went wrong",
+        preferredStyle: .alert)
+    
     //MARK :- Lifecycle methods
 
     override func viewDidLoad() {
@@ -55,6 +59,12 @@ final class LoginViewController: UIViewController {
             action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
+        //add button to AlertController
+        alertController.addAction(
+            UIAlertAction.init(
+                title: "OK",
+                style: .default,
+                handler: nil))
     }
     
     deinit {
@@ -120,6 +130,7 @@ final class LoginViewController: UIViewController {
         
         SVProgressHUD.show()
         //TODO: - Add "remember me" functionality
+        //      Locally store user token once generated and first check if the token is valid I guess?
         firstly{
             APIManager.request(
                 LoginData.self,
@@ -131,10 +142,12 @@ final class LoginViewController: UIViewController {
                 decoder: JSONDecoder())
             }.ensure {
                 SVProgressHUD.dismiss()
-            }.done { token in
-                self.navigateToHomeScene()
-            }.catch { error in
-                print("\(error.localizedDescription)")
+            }.done { loginData in
+                self.navigateToHomeScene(loginData: loginData)
+            }.catch { [weak self] error in
+                guard let alertController = self?.alertController else { return }
+                alertController.message = "Wrong e-mail or password"
+                self?.present(alertController, animated: true, completion: nil)
         }
     }
     
@@ -169,24 +182,29 @@ final class LoginViewController: UIViewController {
                         decoder: JSONDecoder())
                 }.ensure {
                     SVProgressHUD.dismiss()
-                }.done { token in
-                    self.navigateToHomeScene()
-                }.catch{ error in
-                    print("\(error.localizedDescription)")
+                }.done { loginData in
+                    self.navigateToHomeScene(loginData: loginData)
+                }.catch{[weak self] error in
+                    guard let alertController = self?.alertController else { return }
+                    alertController.message = "\(error.localizedDescription)"
+                    self?.present(alertController, animated: true, completion: nil)
             }
-        } else if userEmail.isValidEmail() == false { //Probably bad but i like it
-            SVProgressHUD.showError(withStatus: "Please enter a valid e-mail")
+        } else if !userEmail.isValidEmail() {
+            alertController.message = "Please enter a valid e-mail"
+            self.present(alertController, animated: true, completion: nil)
         } else if userPassword.isEmpty {
-            SVProgressHUD.showError(withStatus: "Password can't be empty")
+            alertController.message = "You must enter a password"
+            self.present(alertController, animated: true, completion: nil)
         }
     }
 
     //MARK: - Navigation
     
-    private func navigateToHomeScene() {
+    private func navigateToHomeScene(loginData: LoginData) {
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
-        let viewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-        navigationController?.pushViewController(viewController, animated: true)
+        let homeViewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
+        homeViewController.userData = loginData
+        navigationController?.pushViewController(homeViewController, animated: true)
     }
 }
 

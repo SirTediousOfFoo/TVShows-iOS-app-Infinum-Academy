@@ -10,6 +10,10 @@ import UIKit
 
 class HomeViewController: UIViewController {
 
+    //MARK: - Properties
+    
+    var userData: LoginData? = nil
+    
     //MARK: - Outlets
     
     @IBOutlet weak var myLabel: UILabel!
@@ -18,6 +22,9 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let userData = userData {
+            myLabel.text = "\(userData.token)"
+        }
         // Do any additional setup after loading the view.
     }
 
