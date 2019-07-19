@@ -7,35 +7,117 @@
 //
 
 import UIKit
+import Alamofire
+import PromiseKit
+import CodableAlamofire
+import SVProgressHUD
 
-class HomeViewController: UIViewController {
-
+final class HomeViewController: UIViewController{
+    
     //MARK: - Properties
     
     var userData: LoginData? = nil
+    private var showsList: [Show] = []
     
     //MARK: - Outlets
     
-    @IBOutlet weak var myLabel: UILabel!
+    @IBOutlet weak var tableView: UITableView!
     
-    //MARK: - Lifetime functions
+    //MARK: - Lifecycle functions
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let userData = userData {
-            myLabel.text = "\(userData.token)"
+        setupTableView()
+        getShowsList(userData: userData)
+        self.title = "Shows"
+    }
+
+    func getShowsList(userData: LoginData?) {
+        
+        guard let token = userData?.token else { return }
+        let headers = ["Authorization": token]
+        SVProgressHUD.show()
+        
+        firstly {
+            APIManager.request(
+                [Show].self,
+                path: "https://api.infinum.academy/api/shows",
+                method: .get,
+                parameters: nil,
+                keyPath: "data",
+                encoding: JSONEncoding.default,
+                decoder: JSONDecoder(),
+                headers: headers)
+            }.ensure {
+                SVProgressHUD.dismiss()
+            }.done { [weak self] showsList in
+                self?.showsList = showsList
+                self?.tableView.reloadData()
+            }.catch { error in
+                print("\(error)")
         }
-        // Do any additional setup after loading the view.
     }
+    
+}
 
-    /*
-    // MARK: - Navigation
+//MARK: - TableView functions
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+extension HomeViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return showsList.count
     }
-    */
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let tableViewCell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: TVShowCell.self),
+            for: indexPath) as! TVShowCell
+        
+        tableViewCell.configure(with: showsList[indexPath.row])
+        
+        return tableViewCell
+    }
+}
 
+extension HomeViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let item = showsList[indexPath.row]
+        print("Selected Item: \(item)")
+    }
+    
+    func tableView(_ tableView: UITableView,
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+    {
+        let deleteAction = UIContextualAction(style: .normal, title:  "Delete", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            
+            print("Deleting \(self.showsList[indexPath.row])")
+
+            self.showsList.remove(at: indexPath.row) //TODO: add API call for deleting shows i guess?
+            tableView.beginUpdates()
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            tableView.endUpdates()
+            
+            success(true)
+        })
+        deleteAction.backgroundColor = .red
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+        
+    }
+}
+
+private extension HomeViewController {
+    func setupTableView() {
+        
+        tableView.estimatedRowHeight = 110
+        tableView.rowHeight = UITableView.automaticDimension
+        
+        tableView.tableFooterView = UIView()
+
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
 }
