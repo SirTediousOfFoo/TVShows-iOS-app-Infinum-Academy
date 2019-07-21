@@ -67,6 +67,17 @@ final class HomeViewController: UIViewController{
         }
     }
     
+    //MARK: - Navigation
+    
+    private func navigateToDetailsScene(selectedShow: Show) {
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let showDetailsViewContoller = storyboard.instantiateViewController(withIdentifier: "ShowDetailsViewController") as! ShowDetailsViewController
+        
+        showDetailsViewContoller.showId = selectedShow.id
+        guard let token = userData?.token else { return }
+        showDetailsViewContoller.userToken = token
+        navigationController?.pushViewController(showDetailsViewContoller, animated: true)
+    }
 }
 
 //MARK: - TableView functions
@@ -94,23 +105,24 @@ extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = showsList[indexPath.row]
-        print("Selected Item: \(item)")
+        navigateToDetailsScene(selectedShow: item)
     }
     
     func tableView(_ tableView: UITableView,
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
-        let deleteAction = UIContextualAction(style: .destructive, title:  "Delete show", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+        let deleteAction = UIContextualAction(
+            style: .destructive,
+            title:  "Delete show",
+            handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             
-            print("Deleting \(self.showsList[indexPath.row])")
-
-            self.showsList.remove(at: indexPath.row) //TODO: add API call for deleting shows i guess?
-            tableView.beginUpdates()
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            tableView.endUpdates()
-            
-            success(true)
-        })
+                self.showsList.remove(at: indexPath.row) //TODO: add API call for deleting shows i guess?
+                tableView.beginUpdates()
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                tableView.endUpdates()
+                
+                success(true)
+            })
         deleteAction.backgroundColor = .red
         
         return UISwipeActionsConfiguration(actions: [deleteAction])
