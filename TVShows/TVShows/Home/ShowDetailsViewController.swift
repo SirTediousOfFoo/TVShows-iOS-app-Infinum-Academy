@@ -22,6 +22,7 @@ class ShowDetailsViewController: UIViewController {
     @IBOutlet weak var episodeCountLabel: UILabel!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var addEpisodeButton: UIButton!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     //MARK: - Properties
     
@@ -35,14 +36,21 @@ class ShowDetailsViewController: UIViewController {
         super.viewDidLoad()
         getShowDetailsFor(showId: showId, token: userToken)
         setupTableView()
+        setupUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    func getShowDetailsFor(showId: String, token: String)
+    private func setupUI() {
+        scrollView.contentInset.top = 280
+    }
+    
+    //MARK: - API calls
+    
+    private func getShowDetailsFor(showId: String, token: String)
     {
         let headers = ["Authorization": token]
         
@@ -107,7 +115,7 @@ extension ShowDetailsViewController: UITableViewDataSource {
 extension ShowDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let item = episodeList[indexPath.row]
+        //let item = episodeList[indexPath.row]
         //Pass to the next view later on with navigation
     }
 }
@@ -126,4 +134,8 @@ private extension ShowDetailsViewController {
 
 //MARK: - Navigation
 
-
+private extension ShowDetailsViewController {
+    @IBAction func onBackButtonPressed() {
+        navigationController?.popViewController(animated: true)
+    }
+}
