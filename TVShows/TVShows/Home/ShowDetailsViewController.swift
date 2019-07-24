@@ -81,14 +81,22 @@ class ShowDetailsViewController: UIViewController {
         }.ensure {
             SVProgressHUD.dismiss()
         }.done { [weak self] episodeList in
-            self?.episodeList = episodeList.sorted(by: { (firstEpisode: Episode, secondEpisode: Episode) -> Bool in
-                return (Int(firstEpisode.season) ?? 0, Int(firstEpisode.episodeNumber) ?? 0) < (Int(secondEpisode.season) ?? 0, Int(secondEpisode.episodeNumber) ?? 0)
-            })
-            self?.episodeCountLabel.text = "\(episodeList.count)" 
-            self?.tableView.reloadData()
+            self?.showSortedData(episodeList: episodeList)
         }.catch { error in
                 print("\(error)")
         }
+    }
+}
+
+//MARK: - Additional data handling
+
+private extension ShowDetailsViewController {
+    private func showSortedData(episodeList: [Episode]) {
+        self.episodeList = episodeList.sorted(by: { (firstEpisode: Episode, secondEpisode: Episode) -> Bool in
+            return (Int(firstEpisode.season) ?? 0, Int(firstEpisode.episodeNumber) ?? 0) < (Int(secondEpisode.season) ?? 0, Int(secondEpisode.episodeNumber) ?? 0)
+        }) //Is it better to use $0, $1 or fully verbose names like above?
+        episodeCountLabel.text = "\(episodeList.count)"
+        tableView.reloadData()
     }
 }
 
@@ -121,12 +129,10 @@ extension ShowDetailsViewController: UITableViewDelegate {
 }
 
 private extension ShowDetailsViewController {
+    
     func setupTableView() {
         tableView.estimatedRowHeight = 50
-        //tableView.rowHeight = UITableView.automaticDimension
-        
         tableView.tableFooterView = UIView()
-        
         tableView.delegate = self
         tableView.dataSource = self
     }
@@ -137,5 +143,24 @@ private extension ShowDetailsViewController {
 private extension ShowDetailsViewController {
     @IBAction func onBackButtonPressed() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    @IBAction func onAddShowButtonPress() {
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let nextViewController = storyboard.instantiateViewController(withIdentifier: "AddEpisodeViewController") as! AddEpisodeViewController
+        let navigationController = UINavigationController(rootViewController: nextViewController)
+        nextViewController.showId = self.showId
+        nextViewController.userToken = self.userToken
+        nextViewController.delegate = self
+        present(navigationController, animated: true, completion: nil)
+    }
+}
+
+//MARK: - Custom delegates
+
+extension ShowDetailsViewController: AddEpisodeViewControllerDelegate {
+    func showListDidChange(addedEpisode: Episode) {
+        episodeList.append(addedEpisode)
+        showSortedData(episodeList: episodeList)
     }
 }

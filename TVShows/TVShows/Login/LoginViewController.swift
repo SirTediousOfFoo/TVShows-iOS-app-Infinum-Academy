@@ -32,7 +32,6 @@ final class LoginViewController: UIViewController {
         title: "Login failed",
         message: "Something went wrong",
         preferredStyle: .alert)
-    private let userDefaults = UserDefaults.standard
     
     //MARK :- Lifecycle methods
 
