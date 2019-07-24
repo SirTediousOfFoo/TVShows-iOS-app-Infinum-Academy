@@ -25,3 +25,9 @@ struct Episode: Codable {
         case season
     }
 }
+
+extension Episode: Comparable {
+    static func < (lhs: Episode, rhs: Episode) -> Bool {
+        return (Int(lhs.season) ?? 0, Int(lhs.episodeNumber) ?? 0) < (Int(rhs.season) ?? 0, Int(rhs.episodeNumber) ?? 0)
+    }
+}

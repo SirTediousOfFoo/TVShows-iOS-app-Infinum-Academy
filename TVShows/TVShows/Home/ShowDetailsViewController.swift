@@ -16,19 +16,17 @@ class ShowDetailsViewController: UIViewController {
 
     //MARK: - Outlets
     
-    @IBOutlet weak var showTitleLabel: UILabel!
-    @IBOutlet weak var showDescriptionLabel: UILabel!
+
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var episodeCountLabel: UILabel!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var addEpisodeButton: UIButton!
-    @IBOutlet weak var scrollView: UIScrollView!
     
     //MARK: - Properties
     
     var showId = ""
     var userToken = ""
     private var episodeList: [Episode] = []
+    var showDetails: ShowDetails? = nil
     
     //MARK: - Lifecycle functions
     
@@ -45,7 +43,7 @@ class ShowDetailsViewController: UIViewController {
     }
     
     private func setupUI() {
-        scrollView.contentInset.top = 280
+        tableView.contentInset.top = 300
     }
     
     //MARK: - API calls
@@ -66,8 +64,7 @@ class ShowDetailsViewController: UIViewController {
                 headers: headers)
         }.then { [weak self] showDetails -> Promise<[Episode]> in
             
-            self?.showTitleLabel.text = showDetails.title
-            self?.showDescriptionLabel.text = showDetails.description
+            self?.showDetails = showDetails
             
             return APIManager.request(
                 [Episode].self,
@@ -83,7 +80,18 @@ class ShowDetailsViewController: UIViewController {
         }.done { [weak self] episodeList in
             self?.showSortedData(episodeList: episodeList)
         }.catch { error in
-                print("\(error)")
+            let alertController = UIAlertController.init(
+                title: "Posting failed",
+                message: "Something went wrong",
+                preferredStyle: .alert)
+            
+            alertController.addAction(
+                UIAlertAction.init(
+                    title: "OK",
+                    style: .default,
+                    handler: nil))
+            
+            alertController.message = error.localizedDescription
         }
     }
 }
@@ -92,10 +100,7 @@ class ShowDetailsViewController: UIViewController {
 
 private extension ShowDetailsViewController {
     private func showSortedData(episodeList: [Episode]) {
-        self.episodeList = episodeList.sorted(by: { (firstEpisode: Episode, secondEpisode: Episode) -> Bool in
-            return (Int(firstEpisode.season) ?? 0, Int(firstEpisode.episodeNumber) ?? 0) < (Int(secondEpisode.season) ?? 0, Int(secondEpisode.episodeNumber) ?? 0)
-        }) //Is it better to use $0, $1 or fully verbose names like above?
-        episodeCountLabel.text = "\(episodeList.count)"
+        self.episodeList = episodeList.sorted()
         tableView.reloadData()
     }
 }
@@ -105,26 +110,46 @@ private extension ShowDetailsViewController {
 extension ShowDetailsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return episodeList.count
+        return episodeList.count + 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let tableViewCell = tableView.dequeueReusableCell(
-            withIdentifier: String(describing: EpisodeCell.self),
-            for: indexPath) as! EpisodeCell
-        
-        tableViewCell.configure(with: episodeList[indexPath.row])
-        
-        return tableViewCell
+        if indexPath.row == 0 {
+
+            let tableViewCell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: EpisodeDetailsCell.self),
+                for: indexPath) as! EpisodeDetailsCell
+            
+            if let showDetails = showDetails {
+                tableViewCell.configure(with: showDetails, numOfEpisodes: episodeList.count)
+            }
+            
+            return tableViewCell
+        } else {
+            let tableViewCell = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: EpisodeCell.self),
+                for: indexPath) as! EpisodeCell
+            
+            tableViewCell.configure(with: episodeList[indexPath.row - 1])
+            
+            return tableViewCell
+        }
     }
 }
 
 extension ShowDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        //let item = episodeList[indexPath.row]
+        //let item = episodeList[indexPath.row-1]
         //Pass to the next view later on with navigation
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == 0 {
+            return UITableView.automaticDimension
+        } else {
+            return 50
+        }
     }
 }
 

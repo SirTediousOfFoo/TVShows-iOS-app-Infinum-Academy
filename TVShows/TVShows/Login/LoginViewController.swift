@@ -72,6 +72,7 @@ final class LoginViewController: UIViewController {
     }
     
     //Doing this keeps the content of the scroll view centered on all devices
+    //TODO: Change this so it checks if it actually needs to change insets or not -> check if contentH - screenH >= keyboardH
     private func setTopInsetValue() {
         if mainStackView.frame.height < scrollView.frame.height //Content is smaller than scrollView so it needs to be centered on screen
         {

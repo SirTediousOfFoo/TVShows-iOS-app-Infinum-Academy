@@ -116,7 +116,7 @@ extension HomeViewController: UITableViewDelegate {
             title:  "Delete show",
             handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             
-                self.showsList.remove(at: indexPath.row) //TODO: add API call for deleting shows i guess?
+                self.showsList.remove(at: indexPath.row) //Didnt do API call here just because I didnt want to risk removing the 6 shows we actually have on the server
                 tableView.beginUpdates()
                 tableView.deleteRows(at: [indexPath], with: .automatic)
                 tableView.endUpdates()

@@ -23,6 +23,7 @@
 		4283F9AF22CF4EE9006F5ABD /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283F9AE22CF4EE9006F5ABD /* LoginViewController.swift */; };
 		4294920922E5D3ED001F241F /* AddEpisodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4294920822E5D3ED001F241F /* AddEpisodeViewController.swift */; };
 		4294922922E73149001F241F /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4294922822E73149001F241F /* Episode.swift */; };
+		4294922B22E8D9B8001F241F /* EpisodeDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4294922A22E8D9B8001F241F /* EpisodeDetailsCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		4283F9AE22CF4EE9006F5ABD /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4294920822E5D3ED001F241F /* AddEpisodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEpisodeViewController.swift; sourceTree = "<group>"; };
 		4294922822E73149001F241F /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
+		4294922A22E8D9B8001F241F /* EpisodeDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailsCell.swift; sourceTree = "<group>"; };
 		B1146C03B9716632AEE9DAC0 /* Pods-TVShows.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.debug.xcconfig"; path = "Target Support Files/Pods-TVShows/Pods-TVShows.debug.xcconfig"; sourceTree = "<group>"; };
 		CB58B024CC1CF8C056A04194 /* Pods-TVShows.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.release.xcconfig"; path = "Target Support Files/Pods-TVShows/Pods-TVShows.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -106,6 +108,7 @@
 			children = (
 				42751A3222E204660030970A /* TVShowCell.swift */,
 				42751A3922E3260F0030970A /* EpisodeCell.swift */,
+				4294922A22E8D9B8001F241F /* EpisodeDetailsCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 				4283F99822CE53DE006F5ABD /* AppDelegate.swift in Sources */,
 				42751A3122E1F7280030970A /* Show.swift in Sources */,
 				427519FD22DD09B70030970A /* HomeViewController.swift in Sources */,
+				4294922B22E8D9B8001F241F /* EpisodeDetailsCell.swift in Sources */,
 				42751A3A22E3260F0030970A /* EpisodeCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

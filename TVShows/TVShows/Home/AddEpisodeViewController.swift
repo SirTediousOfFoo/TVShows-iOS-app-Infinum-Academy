@@ -22,11 +22,7 @@ class AddEpisodeViewController: UIViewController {
     var showId = ""
     var userToken = ""
     weak var delegate: AddEpisodeViewControllerDelegate?
-    private let alertController = UIAlertController.init(
-        title: "Posting failed",
-        message: "Something went wrong",
-        preferredStyle: .alert)
-    
+        
     //MARK: - Outlets
     
     @IBOutlet weak var seasonEpisodePicker: UIPickerView!
@@ -40,6 +36,7 @@ class AddEpisodeViewController: UIViewController {
         super.viewDidLoad()
         setupDelegates()
         handleKeyboardEvents()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -76,12 +73,6 @@ class AddEpisodeViewController: UIViewController {
             action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
-        
-        alertController.addAction(
-            UIAlertAction.init(
-                title: "OK",
-                style: .default,
-                handler: nil))
     }
     
     //MARK: - Event handling
@@ -94,6 +85,7 @@ class AddEpisodeViewController: UIViewController {
                 object: nil,
                 queue: .main
             ) { [weak self] notification in
+                
                 guard let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
                 let keyboardRectangle = keyboardFrame.cgRectValue
                 let keyboardHeight = keyboardRectangle.height
@@ -113,11 +105,13 @@ class AddEpisodeViewController: UIViewController {
                 // keyboard is about to hide, handle UIScrollView contentInset, e.g.
                 self?.scrollView.contentInset.bottom = .zero
         }
+        
         notificaionTokens.append(willShowToken)
         notificaionTokens.append(willHideToken)
     }
 
     @objc func didSelectDone() {
+        
         guard let title = epiosdeTitleField.text,
             let description = episodeDescriptionField.text
             else { return }
@@ -132,7 +126,7 @@ class AddEpisodeViewController: UIViewController {
         ]
         
         let headers = ["Authorization": userToken]
-
+ 
         firstly { APIManager.request(
             Episode.self,
             path: "https://api.infinum.academy/api/episodes",
@@ -146,7 +140,18 @@ class AddEpisodeViewController: UIViewController {
             self?.dismiss(animated: true, completion: nil)
             self?.delegate?.showListDidChange(addedEpisode: result)
         }.catch { [weak self] error in
-            guard let alertController = self?.alertController else { return }
+            
+            let alertController = UIAlertController.init(
+                title: "Posting failed",
+                message: "Something went wrong",
+                preferredStyle: .alert)
+            
+            alertController.addAction(
+                UIAlertAction.init(
+                    title: "OK",
+                    style: .default,
+                    handler: nil))
+            
             alertController.message = error.localizedDescription
             self?.present(alertController, animated: true, completion: nil)
         }
