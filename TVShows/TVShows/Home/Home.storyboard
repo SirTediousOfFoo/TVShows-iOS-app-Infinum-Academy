@@ -98,7 +98,7 @@
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="2Xu-4a-5xm">
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="EpisodeDetailsCell" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="EpisodeDetailsCell" rowHeight="305" id="466-mq-W4U" customClass="EpisodeDetailsCell" customModule="TVShows" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="305"/>
@@ -259,7 +259,7 @@
                     <connections>
                         <outlet property="addEpisodeButton" destination="cec-yJ-JJi" id="67h-ZQ-py8"/>
                         <outlet property="backButton" destination="Wcp-Jo-lI7" id="faL-nm-2xR"/>
-                        <outlet property="showImage" destination="4ED-id-fPn" id="r39-3D-0GG"/>
+                        <outlet property="showImage" destination="4ED-id-fPn" id="BDH-1q-bzD"/>
                         <outlet property="tableView" destination="2Xu-4a-5xm" id="N6t-OY-Fcj"/>
                     </connections>
                 </viewController>
