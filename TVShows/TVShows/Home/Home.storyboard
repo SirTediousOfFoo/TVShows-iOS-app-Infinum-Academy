@@ -259,6 +259,7 @@
                     <connections>
                         <outlet property="addEpisodeButton" destination="cec-yJ-JJi" id="67h-ZQ-py8"/>
                         <outlet property="backButton" destination="Wcp-Jo-lI7" id="faL-nm-2xR"/>
+                        <outlet property="showImage" destination="4ED-id-fPn" id="r39-3D-0GG"/>
                         <outlet property="tableView" destination="2Xu-4a-5xm" id="N6t-OY-Fcj"/>
                     </connections>
                 </viewController>

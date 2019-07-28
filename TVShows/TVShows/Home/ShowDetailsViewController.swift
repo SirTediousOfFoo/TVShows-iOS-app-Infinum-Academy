@@ -7,26 +7,25 @@
 //
 
 import UIKit
-import Alamofire
 import CodableAlamofire
 import PromiseKit
 import SVProgressHUD
 
-class ShowDetailsViewController: UIViewController {
+final class ShowDetailsViewController: UIViewController {
 
     //MARK: - Outlets
     
-
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var backButton: UIButton!
-    @IBOutlet weak var addEpisodeButton: UIButton!
+    @IBOutlet private weak var showImage: UIImageView!
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var backButton: UIButton!
+    @IBOutlet private weak var addEpisodeButton: UIButton!
     
     //MARK: - Properties
     
     var showId = ""
     var userToken = ""
     private var episodeList: [Episode] = []
-    var showDetails: ShowDetails? = nil
+    private var showDetails: ShowDetails? = nil
     
     //MARK: - Lifecycle functions
     
@@ -44,6 +43,7 @@ class ShowDetailsViewController: UIViewController {
     
     private func setupUI() {
         tableView.contentInset.top = 300
+        showImage.image = UIImage(named: "show-image-placeholder")
     }
     
     //MARK: - API calls
@@ -79,22 +79,21 @@ class ShowDetailsViewController: UIViewController {
             SVProgressHUD.dismiss()
         }.done { [weak self] episodeList in
             self?.showSortedData(episodeList: episodeList)
-        }.catch { error in
-            let alertController = UIAlertController.init(
-                title: "Posting failed",
-                message: "Something went wrong",
-                preferredStyle: .alert)
-            
-            alertController.addAction(
-                UIAlertAction.init(
-                    title: "OK",
-                    style: .default,
-                    handler: nil))
-            
-            alertController.message = error.localizedDescription
+        }.catch { [weak self] error in
+            self?.showAlert(title: "Error", message: "\(error.localizedDescription)")
         }
     }
 }
+
+//MARK: - Animations
+
+//private extension ShowDetailsViewController {
+//    //Hopefully this one will add a cool transition into adding episodes
+//    func inflateAddEpisodeButton() {
+//        let animation = CABasicAnimation(keyPath: "<#T##String?#>")
+//    }
+//    
+//}
 
 //MARK: - Additional data handling
 
@@ -139,11 +138,13 @@ extension ShowDetailsViewController: UITableViewDataSource {
 }
 
 extension ShowDetailsViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         //let item = episodeList[indexPath.row-1]
         //Pass to the next view later on with navigation
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 0 {
             return UITableView.automaticDimension
@@ -155,7 +156,7 @@ extension ShowDetailsViewController: UITableViewDelegate {
 
 private extension ShowDetailsViewController {
     
-    func setupTableView() {
+    private func setupTableView() {
         tableView.estimatedRowHeight = 50
         tableView.tableFooterView = UIView()
         tableView.delegate = self
@@ -166,11 +167,11 @@ private extension ShowDetailsViewController {
 //MARK: - Navigation
 
 private extension ShowDetailsViewController {
-    @IBAction func onBackButtonPressed() {
+    @IBAction private func onBackButtonPressed() {
         navigationController?.popViewController(animated: true)
     }
     
-    @IBAction func onAddShowButtonPress() {
+    @IBAction private func onAddShowButtonPress() {
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
         let nextViewController = storyboard.instantiateViewController(withIdentifier: "AddEpisodeViewController") as! AddEpisodeViewController
         let navigationController = UINavigationController(rootViewController: nextViewController)

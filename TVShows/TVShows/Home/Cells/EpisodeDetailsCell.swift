@@ -12,20 +12,15 @@ class EpisodeDetailsCell: UITableViewCell {
     
     //MARK: - Outlets
     
-    @IBOutlet weak var showTitleLabel: UILabel!
-    @IBOutlet weak var showDescriptionLabel: UILabel!
-    @IBOutlet weak var episodeCountLabel: UILabel!
-    
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
+    @IBOutlet private weak var showTitleLabel: UILabel!
+    @IBOutlet private weak var showDescriptionLabel: UILabel!
+    @IBOutlet private weak var episodeCountLabel: UILabel!
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        showTitleLabel.text = "Title missing"
-        showDescriptionLabel.text = "Description missing"
-        episodeCountLabel.text = "0"
+        showTitleLabel.text = nil
+        showDescriptionLabel.text = nil
+        episodeCountLabel.text = nil
     }
     
 }

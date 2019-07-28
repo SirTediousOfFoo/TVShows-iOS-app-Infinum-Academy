@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Alamofire
 import PromiseKit
 import CodableAlamofire
 import SVProgressHUD
@@ -21,7 +20,7 @@ final class HomeViewController: UIViewController{
     
     //MARK: - Outlets
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
     
     //MARK: - Lifecycle functions
     
@@ -32,18 +31,17 @@ final class HomeViewController: UIViewController{
         self.title = "Shows"
     }
 
-    //I did this in the prevoious view, and it hides the navbar for this one too but I've put
-    //the function in this one as well for redundancy's sake, I also don't know if it's bad
-    //praxis that I put the Home screen in a separate storyboard which is what I did here.
-    //Good thing it's an easy fix so I'll leave it here for now.
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    func getShowsList(userData: LoginData?) {
+    private func getShowsList(userData: LoginData?) {
         
-        guard let token = userData?.token else { return }
+        guard let token = userData?.token else {
+            showAlert(title: "Authentication error", message: "Please try logging in to your account again")
+            return }
+        
         let headers = ["Authorization": token]
         SVProgressHUD.show()
         
@@ -62,20 +60,20 @@ final class HomeViewController: UIViewController{
             }.done { [weak self] showsList in
                 self?.showsList = showsList
                 self?.tableView.reloadData()
-            }.catch { error in
-                print("\(error)")
+            }.catch { [weak self] error in
+                self?.showAlert(title: "Error", message: "\(error.localizedDescription)")
         }
     }
     
     //MARK: - Navigation
     
     private func navigateToDetailsScene(selectedShow: Show) {
-        let storyboard = UIStoryboard(name: "Home", bundle: nil)
-        let showDetailsViewContoller = storyboard.instantiateViewController(withIdentifier: "ShowDetailsViewController") as! ShowDetailsViewController
-        
-        showDetailsViewContoller.showId = selectedShow.id
         guard let token = userData?.token else { return }
+
+        let showDetailsViewContoller = storyboard?.instantiateViewController(withIdentifier: "ShowDetailsViewController") as! ShowDetailsViewController
+        showDetailsViewContoller.showId = selectedShow.id
         showDetailsViewContoller.userToken = token
+        
         navigationController?.pushViewController(showDetailsViewContoller, animated: true)
     }
 }
@@ -113,14 +111,12 @@ extension HomeViewController: UITableViewDelegate {
     {
         let deleteAction = UIContextualAction(
             style: .destructive,
-            title:  "Delete show",
-            handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            
-                self.showsList.remove(at: indexPath.row) //Didnt do API call here just because I didnt want to risk removing the 6 shows we actually have on the server
-                tableView.beginUpdates()
-                tableView.deleteRows(at: [indexPath], with: .automatic)
-                tableView.endUpdates()
-                
+            title: "Delete",
+            handler: { (action: UIContextualAction, view: UIView, success: (Bool) -> Void) in //Deletion still just visual since we don't really want to delete the shows we have
+                tableView.performBatchUpdates({
+                    self.showsList.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                }, completion: nil)
                 success(true)
             })
         deleteAction.backgroundColor = .red
@@ -131,7 +127,8 @@ extension HomeViewController: UITableViewDelegate {
 }
 
 private extension HomeViewController {
-    func setupTableView() {
+    
+    private func setupTableView() {
         
         tableView.estimatedRowHeight = 110
         tableView.rowHeight = UITableView.automaticDimension

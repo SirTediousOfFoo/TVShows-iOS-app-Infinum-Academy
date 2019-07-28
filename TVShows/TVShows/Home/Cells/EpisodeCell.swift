@@ -12,12 +12,8 @@ class EpisodeCell: UITableViewCell {
 
     //MARK: - Outlets
     
-    @IBOutlet weak var episodeNumberLabel: UILabel!
-    @IBOutlet weak var episodeNameLabel: UILabel!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
+    @IBOutlet private weak var episodeNumberLabel: UILabel!
+    @IBOutlet private weak var episodeNameLabel: UILabel!
     
     override func prepareForReuse() {
         super.prepareForReuse()

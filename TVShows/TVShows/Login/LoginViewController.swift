@@ -28,10 +28,6 @@ final class LoginViewController: UIViewController {
     private var rememberMeIsSelected: Bool = false
     private var topInsetValue: CGFloat = 0
     private var notificaionTokens: [NSObjectProtocol] = []
-    private var alertController = UIAlertController.init(
-        title: "Login failed",
-        message: "Something went wrong",
-        preferredStyle: .alert)
     
     //MARK :- Lifecycle methods
 
@@ -59,12 +55,6 @@ final class LoginViewController: UIViewController {
             action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
-        //add button to AlertController
-        alertController.addAction(
-            UIAlertAction.init(
-                title: "OK",
-                style: .default,
-                handler: nil))
     }
     
     deinit {
@@ -144,6 +134,17 @@ extension String {
     }
 }
 
+//MARK: - Animations
+
+extension UITextField { //We shake the textbox with this one if fields are empty during acc creation
+    func shake() {
+        self.transform = CGAffineTransform(translationX: 20, y: 0)
+        UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            self.transform = CGAffineTransform.identity
+        }, completion: nil)
+    }
+}
+
 //MARK: - User authentication functions
 
 extension LoginViewController {
@@ -173,9 +174,7 @@ extension LoginViewController {
             }.done { loginData in
                 self.navigateToHomeScene(loginData: loginData)
             }.catch { [weak self] error in
-                guard let alertController = self?.alertController else { return }
-                alertController.message = "Wrong e-mail or password"
-                self?.present(alertController, animated: true, completion: nil)
+                self?.showAlert(title: "Login error", message: "\(error.localizedDescription)")
         }
     }
     
@@ -212,17 +211,31 @@ extension LoginViewController {
                     SVProgressHUD.dismiss()
                 }.done { loginData in
                     self.navigateToHomeScene(loginData: loginData)
-                }.catch{[weak self] error in
-                    guard let alertController = self?.alertController else { return }
-                    alertController.message = "\(error.localizedDescription)"
-                    self?.present(alertController, animated: true, completion: nil)
+                }.catch{ [weak self] error in
+                    self?.showAlert(title: "Login error", message: "\(error.localizedDescription)")
             }
         } else if !userEmail.isValidEmail() {
-            alertController.message = "Please enter a valid e-mail"
-            self.present(alertController, animated: true, completion: nil)
+            usernameTextField.shake()
+            showAlert(title: "Invalid username", message: "You must enter a valid e-mail")
         } else if userPassword.isEmpty {
-            alertController.message = "You must enter a password"
-            self.present(alertController, animated: true, completion: nil)
+            passwordTextField.shake()
+            showAlert(title: "Password empty", message: "You must enter a password")
         }
+    }
+}
+
+extension UIViewController {
+    
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController.init(
+            title: "Error",
+            message: "Something went wrong",
+            preferredStyle: .alert)
+        alertController.addAction(
+            UIAlertAction.init(
+                title: "OK",
+                style: .default,
+                handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
 }

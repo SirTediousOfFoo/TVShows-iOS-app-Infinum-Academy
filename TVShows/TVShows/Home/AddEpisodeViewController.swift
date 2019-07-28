@@ -14,7 +14,7 @@ protocol AddEpisodeViewControllerDelegate: class {
     func showListDidChange(addedEpisode: Episode)
 }
 
-class AddEpisodeViewController: UIViewController {
+final class AddEpisodeViewController: UIViewController {
 
     //MARK: - Properties
     
@@ -25,10 +25,10 @@ class AddEpisodeViewController: UIViewController {
         
     //MARK: - Outlets
     
-    @IBOutlet weak var seasonEpisodePicker: UIPickerView!
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var epiosdeTitleField: UITextField!
-    @IBOutlet weak var episodeDescriptionField: UITextField!
+    @IBOutlet private weak var seasonEpisodePicker: UIPickerView!
+    @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var epiosdeTitleField: UITextField!
+    @IBOutlet private weak var episodeDescriptionField: UITextField!
     
     //MARK: - Lifecycle functions
     
@@ -36,17 +36,20 @@ class AddEpisodeViewController: UIViewController {
         super.viewDidLoad()
         setupDelegates()
         handleKeyboardEvents()
-        
+        setupUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupUI()
+    }
+    
+    deinit {
+        notificaionTokens.forEach(NotificationCenter.default.removeObserver)
     }
     
     //MARK: - UI setup
     
-    func setupUI() {
+    private func setupUI() {
         
         let leftBarButtonItem = UIBarButtonItem(
             title: "Cancel",
@@ -102,7 +105,7 @@ class AddEpisodeViewController: UIViewController {
                 object: nil,
                 queue: .main
             ) { [weak self] notification in
-                // keyboard is about to hide, handle UIScrollView contentInset, e.g.
+                // keyboard is about to hide, handle UIScrollView contentInset
                 self?.scrollView.contentInset.bottom = .zero
         }
         
@@ -110,7 +113,7 @@ class AddEpisodeViewController: UIViewController {
         notificaionTokens.append(willHideToken)
     }
 
-    @objc func didSelectDone() {
+    @objc private func didSelectDone() {
         
         guard let title = epiosdeTitleField.text,
             let description = episodeDescriptionField.text
@@ -140,24 +143,11 @@ class AddEpisodeViewController: UIViewController {
             self?.dismiss(animated: true, completion: nil)
             self?.delegate?.showListDidChange(addedEpisode: result)
         }.catch { [weak self] error in
-            
-            let alertController = UIAlertController.init(
-                title: "Posting failed",
-                message: "Something went wrong",
-                preferredStyle: .alert)
-            
-            alertController.addAction(
-                UIAlertAction.init(
-                    title: "OK",
-                    style: .default,
-                    handler: nil))
-            
-            alertController.message = error.localizedDescription
-            self?.present(alertController, animated: true, completion: nil)
+            self?.showAlert(title: "Posting failed", message: "\(error.localizedDescription)")
         }
     }
     
-    @objc func didSelectCancel() {
+    @objc private func didSelectCancel() {
         dismiss(animated: true, completion: nil)
     }
 }
@@ -177,7 +167,7 @@ extension AddEpisodeViewController: UIPickerViewDelegate, UIPickerViewDataSource
             return "\(row+1)"
     }
     
-    func setupDelegates() {
+    private func setupDelegates() {
         seasonEpisodePicker.delegate = self
         seasonEpisodePicker.dataSource = self
     }
