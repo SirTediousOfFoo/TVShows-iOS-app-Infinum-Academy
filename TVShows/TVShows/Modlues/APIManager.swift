@@ -13,26 +13,27 @@ import CodableAlamofire
 
 class APIManager {
     
-    static func request<T: Decodable>(_ type: T.Type, path: String, method: HTTPMethod, parameters: Parameters? = nil, keyPath: String? = nil, encoding: ParameterEncoding = JSONEncoding.default, decoder: JSONDecoder = JSONDecoder()) -> Promise<T> {
+    static func request<T: Decodable>(_ type: T.Type, path: String, method: HTTPMethod, parameters: Parameters? = nil, keyPath: String? = nil, encoding: ParameterEncoding = JSONEncoding.default, decoder: JSONDecoder = JSONDecoder(), headers: HTTPHeaders? = nil) -> Promise<T> {
         return Promise { promise in
             Alamofire
                 .request(
                     path,
                     method: method,
                     parameters: parameters,
-                    encoding: encoding)
+                    encoding: encoding,
+                    headers: headers)
                 .validate()
                 .responseDecodableObject(
-                keyPath: keyPath,
-                decoder: JSONDecoder()) { (response: DataResponse<T>) in
-                    switch response.result {
-                    case .success(let model):
-                        promise.fulfill(model)
-                    case .failure(let error):
-                        promise.reject(error)
-                    }
+                    keyPath: keyPath,
+                    decoder: decoder) { (response: DataResponse<T>) in
+                        switch response.result {
+                        case .success(let model):
+                            promise.fulfill(model)
+                        case .failure(let error):
+                            promise.reject(error)
+                        }
             }
         }
     }
-
+    
 }

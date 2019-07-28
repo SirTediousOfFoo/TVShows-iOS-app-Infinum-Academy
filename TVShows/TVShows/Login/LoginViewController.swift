@@ -28,7 +28,7 @@ final class LoginViewController: UIViewController {
     private var rememberMeIsSelected: Bool = false
     private var topInsetValue: CGFloat = 0
     private var notificaionTokens: [NSObjectProtocol] = []
-
+    
     //MARK :- Lifecycle methods
 
     override func viewDidLoad() {
@@ -62,6 +62,7 @@ final class LoginViewController: UIViewController {
     }
     
     //Doing this keeps the content of the scroll view centered on all devices
+    //TODO: Change this so it checks if it actually needs to change insets or not -> check if contentH - screenH >= keyboardH
     private func setTopInsetValue() {
         if mainStackView.frame.height < scrollView.frame.height //Content is smaller than scrollView so it needs to be centered on screen
         {
@@ -109,8 +110,46 @@ final class LoginViewController: UIViewController {
         notificaionTokens.append(willHideToken)
     }
 
-    @IBAction func onLogin() {
+    //MARK: - Navigation
+    
+    private func navigateToHomeScene(loginData: LoginData) {
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let homeViewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
+        homeViewController.userData = loginData
+        navigationController?.pushViewController(homeViewController, animated: true)
+    }
+}
 
+//MARK: - Helper functions
+
+extension String {
+    func isValidEmail() -> Bool {
+        let regex = try! NSRegularExpression(
+            pattern: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}",
+            options: .caseInsensitive)
+        return regex.firstMatch(
+            in: self,
+            options: [],
+            range: NSRange(location: 0, length: count)) != nil
+    }
+}
+
+//MARK: - Animations
+
+extension UITextField { //We shake the textbox with this one if fields are empty during acc creation
+    func shake() {
+        self.transform = CGAffineTransform(translationX: 20, y: 0)
+        UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            self.transform = CGAffineTransform.identity
+        }, completion: nil)
+    }
+}
+
+//MARK: - User authentication functions
+
+extension LoginViewController {
+    @IBAction func onLogin() {
+        
         guard let userEmail = usernameTextField.text, let userPassword = passwordTextField.text else { return }
         
         let parameters: [String: String] = [
@@ -120,6 +159,7 @@ final class LoginViewController: UIViewController {
         
         SVProgressHUD.show()
         //TODO: - Add "remember me" functionality
+        //      Locally store user token once generated and first check if the token is valid I guess? Not sure how to check token against the web service sadly.
         firstly{
             APIManager.request(
                 LoginData.self,
@@ -131,10 +171,10 @@ final class LoginViewController: UIViewController {
                 decoder: JSONDecoder())
             }.ensure {
                 SVProgressHUD.dismiss()
-            }.done { token in
-                self.navigateToHomeScene()
-            }.catch { error in
-                print("\(error.localizedDescription)")
+            }.done { loginData in
+                self.navigateToHomeScene(loginData: loginData)
+            }.catch { [weak self] error in
+                self?.showAlert(title: "Login error", message: "\(error.localizedDescription)")
         }
     }
     
@@ -169,37 +209,33 @@ final class LoginViewController: UIViewController {
                         decoder: JSONDecoder())
                 }.ensure {
                     SVProgressHUD.dismiss()
-                }.done { token in
-                    self.navigateToHomeScene()
-                }.catch{ error in
-                    print("\(error.localizedDescription)")
+                }.done { loginData in
+                    self.navigateToHomeScene(loginData: loginData)
+                }.catch{ [weak self] error in
+                    self?.showAlert(title: "Login error", message: "\(error.localizedDescription)")
             }
-        } else if userEmail.isValidEmail() == false { //Probably bad but i like it
-            SVProgressHUD.showError(withStatus: "Please enter a valid e-mail")
+        } else if !userEmail.isValidEmail() {
+            usernameTextField.shake()
+            showAlert(title: "Invalid username", message: "You must enter a valid e-mail")
         } else if userPassword.isEmpty {
-            SVProgressHUD.showError(withStatus: "Password can't be empty")
+            passwordTextField.shake()
+            showAlert(title: "Password empty", message: "You must enter a password")
         }
-    }
-
-    //MARK: - Navigation
-    
-    private func navigateToHomeScene() {
-        let storyboard = UIStoryboard(name: "Home", bundle: nil)
-        let viewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
-//MARK: - Helper functions
-
-extension String {
-    func isValidEmail() -> Bool {
-        let regex = try! NSRegularExpression(
-            pattern: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}",
-            options: .caseInsensitive)
-        return regex.firstMatch(
-            in: self,
-            options: [],
-            range: NSRange(location: 0, length: count)) != nil
+extension UIViewController {
+    
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController.init(
+            title: "Error",
+            message: "Something went wrong",
+            preferredStyle: .alert)
+        alertController.addAction(
+            UIAlertAction.init(
+                title: "OK",
+                style: .default,
+                handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
 }
