@@ -19,7 +19,8 @@ final class ShowDetailsViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var backButton: UIButton!
     @IBOutlet private weak var addEpisodeButton: UIButton!
-    
+    @IBOutlet private weak var viewForAnimation: UIView!
+
     //MARK: - Properties
     
     var showId = ""
@@ -44,6 +45,7 @@ final class ShowDetailsViewController: UIViewController {
     private func setupUI() {
         tableView.contentInset.top = 300
         showImage.image = UIImage(named: "show-image-placeholder")
+        viewForAnimation.layer.cornerRadius = viewForAnimation.bounds.size.width/2
     }
     
     //MARK: - API calls
@@ -87,13 +89,20 @@ final class ShowDetailsViewController: UIViewController {
 
 //MARK: - Animations
 
-//private extension ShowDetailsViewController {
-//    //Hopefully this one will add a cool transition into adding episodes
-//    func inflateAddEpisodeButton() {
-//        let animation = CABasicAnimation(keyPath: "<#T##String?#>")
-//    }
-//    
-//}
+private extension ShowDetailsViewController {
+    //Hopefully this one will add a cool transition into adding episodes
+    func inflateAddEpisodeButton() {
+        UIView.animate(
+        withDuration: 0.5,
+        delay: 0.0,
+        options: [.curveEaseOut],
+        animations: { [weak self] in
+            self?.viewForAnimation.transform = CGAffineTransform(scaleX: 150, y: 150)
+        },
+        completion: nil)
+    }
+    
+}
 
 //MARK: - Additional data handling
 
@@ -178,7 +187,32 @@ private extension ShowDetailsViewController {
         nextViewController.showId = self.showId
         nextViewController.userToken = self.userToken
         nextViewController.delegate = self
-        present(navigationController, animated: true, completion: nil)
+        
+        //I like the way this one feels, it's probably very poor in regards of code quality/readability. It looks a little ugly
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0.0,
+            options: [.curveEaseOut],
+            animations: { //is weak self needed here?
+                guard
+                    let viewForAnimation = self.viewForAnimation,
+                    let view = self.view
+                    else { return }
+                viewForAnimation.isHidden = false
+                viewForAnimation.transform = CGAffineTransform(scaleX: 150, y: 150)
+                viewForAnimation.center = CGPoint(
+                    x: view.center.x,
+                    y: view.center.y)
+            },
+            completion: { [weak self] _ in //is this better than the closure above? the upper one looks much nicer
+                self?.present(navigationController, animated: false, completion: {
+                    self?.viewForAnimation.transform = CGAffineTransform(scaleX: 1, y: 1)
+                    self?.viewForAnimation.center = CGPoint(
+                        x: self?.addEpisodeButton.center.x ?? 0,
+                        y: self?.addEpisodeButton.center.y ?? 0)
+                    self?.viewForAnimation.isHidden = true
+                })
+        })
     }
 }
 

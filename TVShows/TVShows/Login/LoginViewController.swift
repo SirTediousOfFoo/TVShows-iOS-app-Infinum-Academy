@@ -150,13 +150,16 @@ extension UITextField { //We shake the textbox with this one if fields are empty
 extension LoginViewController {
     @IBAction func onLogin() {
         
-        guard let userEmail = usernameTextField.text, let userPassword = passwordTextField.text else { return }
+        guard
+            let userEmail = usernameTextField.text,
+            let userPassword = passwordTextField.text
+            else { return }
         
         let parameters: [String: String] = [
             "email": userEmail,
             "password": userPassword
         ]
-        
+        //No animations here since it's bad security praxis to tell the users whether the username or the password is wrong
         SVProgressHUD.show()
         //TODO: - Add "remember me" functionality
         //      Locally store user token once generated and first check if the token is valid I guess? Not sure how to check token against the web service sadly.

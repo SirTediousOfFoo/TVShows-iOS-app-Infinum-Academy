@@ -9,5 +9,6 @@ target 'TVShows' do
   pod 'CodableAlamofire'
   pod "PromiseKit/CorePromise", "~> 6.0"
   pod "PromiseKit/Alamofire"
-  
+  pod 'Kingfisher', '~> 5.0'
+
 end

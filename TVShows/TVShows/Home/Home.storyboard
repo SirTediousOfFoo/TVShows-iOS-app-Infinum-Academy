@@ -239,9 +239,18 @@
                                     <action selector="onAddShowButtonPress" destination="0Oy-Kf-e5H" eventType="touchUpInside" id="fax-g3-Spy"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w5T-4R-Uk5">
+                                <rect key="frame" x="359" y="812" width="5" height="5"/>
+                                <color key="backgroundColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="5" id="Iog-xf-rW5"/>
+                                    <constraint firstAttribute="height" constant="5" id="jtR-gw-Sus"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="cec-yJ-JJi" firstAttribute="bottom" secondItem="w5T-4R-Uk5" secondAttribute="bottom" constant="30" id="IFE-7U-di0"/>
                             <constraint firstItem="AqF-H4-OVE" firstAttribute="trailing" secondItem="2Xu-4a-5xm" secondAttribute="trailing" id="JoX-4k-IyT"/>
                             <constraint firstItem="4ED-id-fPn" firstAttribute="trailing" secondItem="AqF-H4-OVE" secondAttribute="trailing" id="Mgs-Gd-S0K"/>
                             <constraint firstItem="4ED-id-fPn" firstAttribute="leading" secondItem="AqF-H4-OVE" secondAttribute="leading" id="Sqg-6R-lJf"/>
@@ -249,6 +258,7 @@
                             <constraint firstItem="AqF-H4-OVE" firstAttribute="trailing" secondItem="cec-yJ-JJi" secondAttribute="trailing" constant="20" id="aa1-WE-qAt"/>
                             <constraint firstItem="4ED-id-fPn" firstAttribute="top" secondItem="AqF-H4-OVE" secondAttribute="top" id="f1U-Cl-6Iv"/>
                             <constraint firstItem="AqF-H4-OVE" firstAttribute="bottom" secondItem="2Xu-4a-5xm" secondAttribute="bottom" id="j81-LM-dHT"/>
+                            <constraint firstItem="cec-yJ-JJi" firstAttribute="trailing" secondItem="w5T-4R-Uk5" secondAttribute="trailing" constant="30" id="qBv-im-TuA"/>
                             <constraint firstItem="2Xu-4a-5xm" firstAttribute="leading" secondItem="AqF-H4-OVE" secondAttribute="leading" id="ta5-NH-zHt"/>
                             <constraint firstItem="Wcp-Jo-lI7" firstAttribute="top" secondItem="AqF-H4-OVE" secondAttribute="top" constant="20" id="tbH-WI-Coq"/>
                             <constraint firstItem="AqF-H4-OVE" firstAttribute="bottom" secondItem="cec-yJ-JJi" secondAttribute="bottom" constant="15" id="tle-Cn-d7D"/>
@@ -261,6 +271,7 @@
                         <outlet property="backButton" destination="Wcp-Jo-lI7" id="faL-nm-2xR"/>
                         <outlet property="showImage" destination="4ED-id-fPn" id="BDH-1q-bzD"/>
                         <outlet property="tableView" destination="2Xu-4a-5xm" id="N6t-OY-Fcj"/>
+                        <outlet property="viewForAnimation" destination="w5T-4R-Uk5" id="Owe-j0-ogr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Ch-CX-R5h" userLabel="First Responder" sceneMemberID="firstResponder"/>
