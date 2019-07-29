@@ -43,8 +43,8 @@ final class ShowDetailsViewController: UIViewController {
     }
     
     private func setupUI() {
+        
         tableView.contentInset.top = 300
-        showImage.image = UIImage(named: "show-image-placeholder")
         viewForAnimation.layer.cornerRadius = viewForAnimation.bounds.size.width/2
     }
     
@@ -67,6 +67,9 @@ final class ShowDetailsViewController: UIViewController {
         }.then { [weak self] showDetails -> Promise<[Episode]> in
             
             self?.showDetails = showDetails
+            
+            let url = URL(string: "https://api.infinum.academy" + showDetails.imageUrl)
+            self?.showImage.kf.setImage(with: url)
             
             return APIManager.request(
                 [Episode].self,

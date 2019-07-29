@@ -7,6 +7,10 @@
 //
 
 import UIKit
+import PromiseKit
+import KeychainAccess
+import CodableAlamofire
+import SVProgressHUD
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

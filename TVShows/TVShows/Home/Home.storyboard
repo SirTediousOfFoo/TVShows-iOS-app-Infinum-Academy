@@ -431,10 +431,10 @@
             </objects>
             <point key="canvasLocation" x="2791" y="-44"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--HomeNavController-->
         <scene sceneID="5sg-re-hQ1">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PB4-vJ-2UA" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="HomeNavigationController" title="HomeNavController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="PB4-vJ-2UA" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="DJ8-Qr-Kel">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>

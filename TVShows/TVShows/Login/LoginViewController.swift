@@ -11,6 +11,7 @@ import SVProgressHUD
 import Alamofire
 import CodableAlamofire
 import PromiseKit
+import KeychainAccess
 
 final class LoginViewController: UIViewController {
     
@@ -25,14 +26,16 @@ final class LoginViewController: UIViewController {
     
     //MARK :- Properties
     
-    private var rememberMeIsSelected: Bool = false
     private var topInsetValue: CGFloat = 0
     private var notificaionTokens: [NSObjectProtocol] = []
-    
+    private let defaults = UserDefaults.standard
+    let keychain = Keychain(service: "co.petar.imilosevic.TVShows")
+
     //MARK :- Lifecycle methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        checkUserCedentials()
         configureUI()
         handleKeyboardEvents()
     }
@@ -44,6 +47,7 @@ final class LoginViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+     //   checkSavedCredentials()
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
@@ -106,16 +110,17 @@ final class LoginViewController: UIViewController {
                 guard let topInsetValue = self?.topInsetValue else { return }
                 self?.scrollView.contentInset.top = topInsetValue
             }
+        
         notificaionTokens.append(willShowToken)
         notificaionTokens.append(willHideToken)
     }
 
     //MARK: - Navigation
     
-    private func navigateToHomeScene(loginData: LoginData) {
+    private func navigateToHomeScene() {
+        
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-        homeViewController.userData = loginData
         navigationController?.pushViewController(homeViewController, animated: true)
     }
 }
@@ -148,21 +153,64 @@ extension UITextField { //We shake the textbox with this one if fields are empty
 //MARK: - User authentication functions
 
 extension LoginViewController {
-    @IBAction func onLogin() {
+    //Tried doing this from app delegate to completley hide the entire view and just jump straight to the episode screen but couldn't get it to work
+    private func checkUserCedentials() {
+        if defaults.bool(forKey: "userIsRemembered") {
+            
+            guard
+                let userEmail = keychain["username"],
+                let userPassword = keychain["password"]
+                else { return }
+            
+            let parameters: [String: String] = [
+                "email": userEmail,
+                "password": userPassword
+            ]
+            
+            SVProgressHUD.show()
+            
+            firstly{
+                APIManager.request(
+                    LoginData.self,
+                    path: "https://api.infinum.academy/api/users/sessions",
+                    method: .post,
+                    parameters: parameters,
+                    keyPath: "data",
+                    encoding: JSONEncoding.default,
+                    decoder: JSONDecoder())
+                }.ensure {
+                    SVProgressHUD.dismiss()
+                }.done { [weak self] loginData in
+                    self?.keychain["userToken"] = loginData.token
+                    self?.navigateToHomeScene()
+                }.catch { (Error) in
+                    print(Error)
+            }
+        }
+    }
+    
+    @IBAction private func onLogin() {
         
         guard
             let userEmail = usernameTextField.text,
             let userPassword = passwordTextField.text
             else { return }
         
+        let keychain = Keychain(service: "co.petar.imilosevic.TVShows")
+
         let parameters: [String: String] = [
             "email": userEmail,
             "password": userPassword
         ]
         //No animations here since it's bad security praxis to tell the users whether the username or the password is wrong
         SVProgressHUD.show()
-        //TODO: - Add "remember me" functionality
-        //      Locally store user token once generated and first check if the token is valid I guess? Not sure how to check token against the web service sadly.
+        
+        if rememberMeCheckboxButton.isSelected {
+            defaults.set(true, forKey: "userIsRemembered")
+            keychain["username"] = userEmail
+            keychain["password"] = userPassword
+        }
+        
         firstly{
             APIManager.request(
                 LoginData.self,
@@ -175,13 +223,21 @@ extension LoginViewController {
             }.ensure {
                 SVProgressHUD.dismiss()
             }.done { loginData in
-                self.navigateToHomeScene(loginData: loginData)
+                
+                if self.rememberMeCheckboxButton.isSelected {
+                    self.defaults.set(true, forKey: "userIsRemembered")
+                    keychain["username"] = userEmail
+                    keychain["password"] = userPassword
+                }
+                
+                keychain["userToken"] = loginData.token
+                self.navigateToHomeScene()
             }.catch { [weak self] error in
                 self?.showAlert(title: "Login error", message: "\(error.localizedDescription)")
         }
     }
     
-    @IBAction func onAccountCreation() { //The API does check on the validity of inputs but if the call can be skipped I believe it should
+    @IBAction private func onAccountCreation() { //The API does check on the validity of inputs but if the call can be skipped I believe it should
         guard let userEmail = usernameTextField.text, let userPassword = passwordTextField.text else { return }
         if userEmail.isValidEmail(), !userPassword.isEmpty {
             
@@ -212,20 +268,30 @@ extension LoginViewController {
                         decoder: JSONDecoder())
                 }.ensure {
                     SVProgressHUD.dismiss()
-                }.done { loginData in
-                    self.navigateToHomeScene(loginData: loginData)
+                }.done { [weak self] loginData in
+                    
+                    if self?.rememberMeCheckboxButton.isSelected ?? false {
+                        self?.defaults.set(true, forKey: "userIsRemembered")
+                        self?.keychain["username"] = userEmail
+                        self?.keychain["password"] = userPassword
+                    }
+                    
+                    self?.keychain["userToken"] = loginData.token
+                    self?.navigateToHomeScene()
                 }.catch{ [weak self] error in
                     self?.showAlert(title: "Login error", message: "\(error.localizedDescription)")
             }
         } else if !userEmail.isValidEmail() {
             usernameTextField.shake()
-            showAlert(title: "Invalid username", message: "You must enter a valid e-mail")
+            //showAlert(title: "Invalid username", message: "You must enter a valid e-mail")
         } else if userPassword.isEmpty {
             passwordTextField.shake()
-            showAlert(title: "Password empty", message: "You must enter a password")
-        }
+           // showAlert(title: "Password empty", message: "You must enter a password")
+        }//Doing these two above w/o alerts since I'm now shaking the views to indicate they aren't valid, if I manage to cross over to RX I'll change this up a little
     }
 }
+
+//MARK: - Alert view for all views
 
 extension UIViewController {
     
