@@ -11,7 +11,7 @@
 		427519FD22DD09B70030970A /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427519FC22DD09B70030970A /* HomeViewController.swift */; };
 		42751A0622DD1C800030970A /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42751A0522DD1C800030970A /* Home.storyboard */; };
 		42751A0822DD2B540030970A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42751A0722DD2B540030970A /* User.swift */; };
-		42751A0B22E06A410030970A /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42751A0A22E06A410030970A /* APIManager.swift */; };
+		42751A0B22E06A410030970A /* APIManagerRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42751A0A22E06A410030970A /* APIManagerRequest.swift */; };
 		42751A3122E1F7280030970A /* Show.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42751A3022E1F7280030970A /* Show.swift */; };
 		42751A3322E204660030970A /* TVShowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42751A3222E204660030970A /* TVShowCell.swift */; };
 		42751A3822E313D60030970A /* ShowDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42751A3722E313D60030970A /* ShowDetailsViewController.swift */; };
@@ -24,6 +24,8 @@
 		4294920922E5D3ED001F241F /* AddEpisodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4294920822E5D3ED001F241F /* AddEpisodeViewController.swift */; };
 		4294922922E73149001F241F /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4294922822E73149001F241F /* Episode.swift */; };
 		4294922B22E8D9B8001F241F /* EpisodeDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4294922A22E8D9B8001F241F /* EpisodeDetailsCell.swift */; };
+		4294922D22EF7D21001F241F /* APIManagerUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4294922C22EF7D21001F241F /* APIManagerUpload.swift */; };
+		4294922F22EF806B001F241F /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4294922E22EF806B001F241F /* Media.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +33,7 @@
 		427519FC22DD09B70030970A /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		42751A0522DD1C800030970A /* Home.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		42751A0722DD2B540030970A /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		42751A0A22E06A410030970A /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		42751A0A22E06A410030970A /* APIManagerRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManagerRequest.swift; sourceTree = "<group>"; };
 		42751A3022E1F7280030970A /* Show.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Show.swift; sourceTree = "<group>"; };
 		42751A3222E204660030970A /* TVShowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVShowCell.swift; sourceTree = "<group>"; };
 		42751A3722E313D60030970A /* ShowDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowDetailsViewController.swift; sourceTree = "<group>"; };
@@ -46,6 +48,8 @@
 		4294920822E5D3ED001F241F /* AddEpisodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEpisodeViewController.swift; sourceTree = "<group>"; };
 		4294922822E73149001F241F /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
 		4294922A22E8D9B8001F241F /* EpisodeDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailsCell.swift; sourceTree = "<group>"; };
+		4294922C22EF7D21001F241F /* APIManagerUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManagerUpload.swift; sourceTree = "<group>"; };
+		4294922E22EF806B001F241F /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		B1146C03B9716632AEE9DAC0 /* Pods-TVShows.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.debug.xcconfig"; path = "Target Support Files/Pods-TVShows/Pods-TVShows.debug.xcconfig"; sourceTree = "<group>"; };
 		CB58B024CC1CF8C056A04194 /* Pods-TVShows.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.release.xcconfig"; path = "Target Support Files/Pods-TVShows/Pods-TVShows.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -88,7 +92,8 @@
 		42751A0922E06A0F0030970A /* Modlues */ = {
 			isa = PBXGroup;
 			children = (
-				42751A0A22E06A410030970A /* APIManager.swift */,
+				42751A0A22E06A410030970A /* APIManagerRequest.swift */,
+				4294922C22EF7D21001F241F /* APIManagerUpload.swift */,
 			);
 			path = Modlues;
 			sourceTree = "<group>";
@@ -99,6 +104,7 @@
 				42751A0722DD2B540030970A /* User.swift */,
 				42751A3022E1F7280030970A /* Show.swift */,
 				4294922822E73149001F241F /* Episode.swift */,
+				4294922E22EF806B001F241F /* Media.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -287,9 +293,11 @@
 			files = (
 				4294920922E5D3ED001F241F /* AddEpisodeViewController.swift in Sources */,
 				42751A3822E313D60030970A /* ShowDetailsViewController.swift in Sources */,
+				4294922F22EF806B001F241F /* Media.swift in Sources */,
 				42751A0822DD2B540030970A /* User.swift in Sources */,
 				4283F9AF22CF4EE9006F5ABD /* LoginViewController.swift in Sources */,
-				42751A0B22E06A410030970A /* APIManager.swift in Sources */,
+				4294922D22EF7D21001F241F /* APIManagerUpload.swift in Sources */,
+				42751A0B22E06A410030970A /* APIManagerRequest.swift in Sources */,
 				4294922922E73149001F241F /* Episode.swift in Sources */,
 				42751A3322E204660030970A /* TVShowCell.swift in Sources */,
 				4283F99822CE53DE006F5ABD /* AppDelegate.swift in Sources */,

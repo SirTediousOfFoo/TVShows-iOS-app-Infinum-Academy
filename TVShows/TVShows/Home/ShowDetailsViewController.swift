@@ -88,6 +88,8 @@ final class ShowDetailsViewController: UIViewController {
             self?.showAlert(title: "Error", message: "\(error.localizedDescription)")
         }
     }
+    
+    
 }
 
 //MARK: - Animations

@@ -9,6 +9,7 @@
 import UIKit
 import CodableAlamofire
 import PromiseKit
+import SVProgressHUD
 
 protocol AddEpisodeViewControllerDelegate: class {
     func showListDidChange(addedEpisode: Episode)
@@ -22,7 +23,10 @@ final class AddEpisodeViewController: UIViewController {
     var showId = ""
     var userToken = ""
     weak var delegate: AddEpisodeViewControllerDelegate?
-        
+    let pickerController = UIImagePickerController()
+    var media: Media?
+    var imageByteData: Data?
+    
     //MARK: - Outlets
     
     @IBOutlet private weak var seasonEpisodePicker: UIPickerView!
@@ -119,31 +123,67 @@ final class AddEpisodeViewController: UIViewController {
             let description = episodeDescriptionField.text
             else { return }
         
-        let parameters: [String: String] = [
+        let headers = ["Authorization": userToken]
+        
+        var parameters: [String: String] = [
             "showId": showId,
-            //"mediaId": "",
+            "mediaId": "",
             "title": title,
             "description": description,
             "episodeNumber": "\(seasonEpisodePicker.selectedRow(inComponent: 1)+1)",
             "season": "\(seasonEpisodePicker.selectedRow(inComponent: 0)+1)"
         ]
         
-        let headers = ["Authorization": userToken]
+        SVProgressHUD.show()
+        
+        guard let imageByteData = imageByteData else { //Probably terrible but couldn't think of a smarter way to this via PromiseKit and keept it all synced
+            
+            firstly { APIManager.request(
+                Episode.self,
+                path: "https://api.infinum.academy/api/episodes",
+                method: .post,
+                parameters: parameters,
+                keyPath: "data",
+                encoding: JSONEncoding.default,
+                decoder: JSONDecoder(),
+                headers: headers)
+                }.done { [weak self] result in
+                    self?.dismiss(animated: true, completion: nil)
+                    self?.delegate?.showListDidChange(addedEpisode: result)
+                }.ensure{
+                    SVProgressHUD.dismiss()
+                }.catch { [weak self] error in
+                    self?.showAlert(title: "Posting failed", message: "\(error.localizedDescription)")
+            }
+            
+            return
+        }
  
-        firstly { APIManager.request(
-            Episode.self,
-            path: "https://api.infinum.academy/api/episodes",
-            method: .post,
-            parameters: parameters,
-            keyPath: "data",
-            encoding: JSONEncoding.default,
-            decoder: JSONDecoder(),
-            headers: headers)
-        }.done { [weak self] result in
-            self?.dismiss(animated: true, completion: nil)
-            self?.delegate?.showListDidChange(addedEpisode: result)
-        }.catch { [weak self] error in
-            self?.showAlert(title: "Posting failed", message: "\(error.localizedDescription)")
+        firstly{
+            APIManager.uploadImageOnAPI(
+                fileName: "image.png",
+                imageByteData: imageByteData,
+                headers: headers)
+            }.then{ image -> Promise<Episode> in
+                
+                parameters["mediaId"] = image.id
+                
+                return APIManager.request(
+                    Episode.self,
+                    path: "https://api.infinum.academy/api/episodes",
+                    method: .post,
+                    parameters: parameters,
+                    keyPath: "data",
+                    encoding: JSONEncoding.default,
+                    decoder: JSONDecoder(),
+                    headers: headers)
+            }.ensure{
+                SVProgressHUD.dismiss()
+            }.done { [weak self] result in
+                self?.dismiss(animated: true, completion: nil)
+                self?.delegate?.showListDidChange(addedEpisode: result)
+            }.catch { [weak self] error in
+                self?.showAlert(title: "Posting failed", message: "\(error.localizedDescription)")
         }
     }
     
@@ -152,7 +192,32 @@ final class AddEpisodeViewController: UIViewController {
     }
 }
 
-//MARK: - Picker view setup
+//MARK: - Image picker methods
+
+extension AddEpisodeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    @IBAction func uploadImage() {
+        pickerController.allowsEditing = false
+        pickerController.sourceType = .photoLibrary
+        
+        present(pickerController, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let pickedImage = info[.originalImage] as? UIImage {
+            imageByteData = pickedImage.pngData()!
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+//MARK: - Episode picker view setup
 
 extension AddEpisodeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -170,5 +235,7 @@ extension AddEpisodeViewController: UIPickerViewDelegate, UIPickerViewDataSource
     private func setupDelegates() {
         seasonEpisodePicker.delegate = self
         seasonEpisodePicker.dataSource = self
+        pickerController.delegate = self
     }
 }
+

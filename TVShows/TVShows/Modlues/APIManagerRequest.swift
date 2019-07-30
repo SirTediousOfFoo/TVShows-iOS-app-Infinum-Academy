@@ -1,5 +1,5 @@
 //
-//  APIManager.swift
+//  APIManagerRequest.swift
 //  TVShows
 //
 //  Created by Infinum on 18/07/2019.
