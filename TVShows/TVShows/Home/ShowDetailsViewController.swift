@@ -153,10 +153,21 @@ extension ShowDetailsViewController: UITableViewDataSource {
 
 extension ShowDetailsViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         tableView.deselectRow(at: indexPath, animated: true)
-        //let item = episodeList[indexPath.row-1]
-        //Pass to the next view later on with navigation
+        if(indexPath.row != 0) {
+            
+            let item = episodeList[indexPath.row-1]
+            
+            let storyboard = UIStoryboard(name: "Home", bundle: nil)
+            let episodeViewController = storyboard.instantiateViewController(withIdentifier: "EpisodeDetailsViewController") as! EpisodeDetailsViewController
+            episodeViewController.episode = item
+            if let imageUrl = showDetails?.imageUrl {
+                episodeViewController.showImageUrl = "https://api.infinum.academy" + imageUrl
+            }
+            navigationController?.pushViewController(episodeViewController, animated: true)
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -16,7 +16,6 @@ import KeychainAccess
 final class HomeViewController: UIViewController{
     
     //MARK: - Properties
-    let keychain = Keychain(service: "co.petar.imilosevic.TVShows")
     private var userData: LoginData = LoginData(token: "")
     private var showsList: [Show] = []
     private var isRefreshing = false
@@ -41,11 +40,11 @@ final class HomeViewController: UIViewController{
     }
     
     private func initialSetup(){
-        guard let token = keychain["userToken"]
+        guard let token = UserKeychain.keychain[Properties.userToken.rawValue]
             else {
                 navigateBackToLogin()
                 return
-        }
+            }
         
         userData = LoginData(token: token)
         
@@ -129,7 +128,7 @@ final class HomeViewController: UIViewController{
     private func navigateBackToLogin() {
         
         do {
-            try keychain.removeAll()
+            try UserKeychain.keychain.removeAll()
         } catch let error {
             print("error: \(error)")
         }
