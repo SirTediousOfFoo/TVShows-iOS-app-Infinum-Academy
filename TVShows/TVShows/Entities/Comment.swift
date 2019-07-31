@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Comment: Codable {
+struct PostedComment: Codable {
     var text: String
     var episodeId: String
     var userId: String
@@ -16,12 +16,30 @@ struct Comment: Codable {
     var type: String
     var id: String
     
-    enum codingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case text
         case episodeId
         case userId
         case userEmail
         case type
+        case id = "_id"
+    }
+    
+    func toComment() -> Comment {
+        return Comment(text: text, episodeId: episodeId, userEmail: userEmail, id: id)
+    }
+}
+
+struct Comment: Codable {
+    var text: String
+    var episodeId: String
+    var userEmail: String
+    var id: String
+    
+    enum CodingKeys: String, CodingKey {
+        case text
+        case episodeId
+        case userEmail
         case id = "_id"
     }
 }

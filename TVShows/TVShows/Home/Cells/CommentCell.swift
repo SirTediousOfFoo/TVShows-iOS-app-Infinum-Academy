@@ -23,7 +23,7 @@ class CommentCell: UITableViewCell {
 }
 
 extension CommentCell {
-    func configure(with item: Comment, for rowNumber: Int) {
+    func configure(with item: Comment, at rowNumber: Int) {
         userLabel.text = item.userEmail.components(separatedBy: "@")[0]
         commentLabel.text = item.text
        // This is one way of doing it but i really feel like the modulo operator is simpler here but I have no idea about how much cycles each operation takes so here it is.

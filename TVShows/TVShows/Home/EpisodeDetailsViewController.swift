@@ -62,6 +62,14 @@ final class EpisodeDetailsViewController: UIViewController {
     // MARK: - Navigation
 
     @IBAction func navigateToComments() {
+        guard let episodeId = episode?.id else {
+            showAlert(title: "Error", message: "Couldn't get episode ID")
+            return
+        }
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let commentsViewController = storyboard.instantiateViewController(withIdentifier: "CommentsViewController") as! CommentsViewController
+        commentsViewController.episodeId = episodeId
+        present(commentsViewController, animated: true, completion: nil)
     }
     
     @IBAction func navigateBack(_ sender: Any) {
