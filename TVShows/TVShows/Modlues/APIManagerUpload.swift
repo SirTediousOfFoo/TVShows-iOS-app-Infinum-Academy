@@ -44,18 +44,4 @@ extension APIManager {
             }
         }
     }
-    
-    static func processUploadRequest(_ uploadRequest: UploadRequest) {
-        uploadRequest
-            .responseDecodableObject(keyPath: "data") { (response: DataResponse<Media>) in
-                switch response.result {
-                case .success(let media):
-                    print("DECODED: \(media)")
-                    print("Proceed to add episode call...")
-                case .failure(let error):
-                    print("FAILURE: \(error)")
-
-                }
-            }
-        }
 }

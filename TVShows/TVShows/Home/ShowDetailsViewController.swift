@@ -24,7 +24,6 @@ final class ShowDetailsViewController: UIViewController {
     //MARK: - Properties
     
     var showId = ""
-    var userToken = ""
     private var episodeList: [Episode] = []
     private var showDetails: ShowDetails? = nil
     
@@ -32,7 +31,7 @@ final class ShowDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getShowDetailsFor(showId: showId, token: userToken)
+        getShowDetailsFor(showId: showId)
         setupTableView()
         setupUI()
     }
@@ -50,8 +49,13 @@ final class ShowDetailsViewController: UIViewController {
     
     //MARK: - API calls
     
-    private func getShowDetailsFor(showId: String, token: String)
+    private func getShowDetailsFor(showId: String)
     {
+        guard let token = UserKeychain.keychain[Properties.userToken.rawValue] else {
+            showAlert(title: "Session expired", message: "Please log back in")
+            return
+        }
+        
         let headers = ["Authorization": token]
         
         firstly {
@@ -201,7 +205,6 @@ private extension ShowDetailsViewController {
         let nextViewController = storyboard.instantiateViewController(withIdentifier: "AddEpisodeViewController") as! AddEpisodeViewController
         let navigationController = UINavigationController(rootViewController: nextViewController)
         nextViewController.showId = self.showId
-        nextViewController.userToken = self.userToken
         nextViewController.delegate = self
         
         //I like the way this one feels, it's probably very poor in regards of code quality/readability. It looks a little ugly

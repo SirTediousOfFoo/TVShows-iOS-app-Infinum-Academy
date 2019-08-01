@@ -221,8 +221,9 @@ private extension CommentsViewController {
     private func setupTableView() {
         
         tableView.estimatedRowHeight = 120
-    //    tableView.rowHeight = UITableView.automaticDimension
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.tableFooterView = UIView()
+
     }
 }

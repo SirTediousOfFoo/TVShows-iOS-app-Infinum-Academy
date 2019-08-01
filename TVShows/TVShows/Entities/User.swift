@@ -22,4 +22,8 @@ struct User: Codable {
 
 struct LoginData: Codable {
     let token: String
+    
+    enum CodingKeys: String, CodingKey {
+        case token
+    }
 }

@@ -16,9 +16,9 @@ import KeychainAccess
 final class HomeViewController: UIViewController{
     
     //MARK: - Properties
-    private var userData: LoginData = LoginData(token: "")
+    
+    private var userData: LoginData? = nil
     private var showsList: [Show] = []
-    private var isRefreshing = false
     
     //MARK: - Outlets
     
@@ -46,7 +46,7 @@ final class HomeViewController: UIViewController{
                 return
             }
         
-        userData = LoginData(token: token)
+        userData = LoginData.init(token: token)
         
         let logoutItem = UIBarButtonItem.init(
             image: UIImage(named: "ic-logout"),
@@ -71,7 +71,6 @@ final class HomeViewController: UIViewController{
     }
     
     @objc private func refreshWrapper() {
-        isRefreshing = true
         getShowsList(userData: userData)
     }
     
@@ -85,7 +84,7 @@ final class HomeViewController: UIViewController{
         
         let headers = ["Authorization": token]
         
-        if !isRefreshing {
+        if !(tableView.refreshControl?.isRefreshing ?? false) {
             SVProgressHUD.show()
         }
         
@@ -100,9 +99,8 @@ final class HomeViewController: UIViewController{
                 decoder: JSONDecoder(),
                 headers: headers)
             }.ensure { [weak self] in
-                if self?.isRefreshing ?? false {
+                if self?.tableView.refreshControl?.isRefreshing ?? false {
                     self?.tableView.refreshControl?.endRefreshing()
-                    self?.isRefreshing = false
                 } else {
                     SVProgressHUD.dismiss()
                 }
@@ -120,7 +118,6 @@ final class HomeViewController: UIViewController{
         
         let showDetailsViewContoller = storyboard?.instantiateViewController(withIdentifier: "ShowDetailsViewController") as! ShowDetailsViewController
         showDetailsViewContoller.showId = selectedShow.id
-        showDetailsViewContoller.userToken = userData.token
 
         navigationController?.pushViewController(showDetailsViewContoller, animated: true)
     }
