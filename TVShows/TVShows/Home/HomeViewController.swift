@@ -10,12 +10,14 @@ import UIKit
 import PromiseKit
 import CodableAlamofire
 import SVProgressHUD
+import Kingfisher
+import KeychainAccess
 
 final class HomeViewController: UIViewController{
     
     //MARK: - Properties
     
-    var userData: LoginData? = nil
+    private var userData: LoginData? = nil
     private var showsList: [Show] = []
     
     //MARK: - Outlets
@@ -26,6 +28,7 @@ final class HomeViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        initialSetup()
         setupTableView()
         getShowsList(userData: userData)
         self.title = "Shows"
@@ -33,8 +36,45 @@ final class HomeViewController: UIViewController{
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
+    
+    private func initialSetup(){
+        guard let token = UserKeychain.keychain[Properties.userToken.rawValue]
+            else {
+                navigateBackToLogin()
+                return
+            }
+        
+        userData = LoginData.init(token: token)
+        
+        let logoutItem = UIBarButtonItem.init(
+            image: UIImage(named: "ic-logout"),
+            style: .plain,
+            target: self,
+            action: #selector(_logoutActionHandler))
+        
+            navigationItem.leftBarButtonItem = logoutItem
+        
+        let refresher = UIRefreshControl()
+        refresher.addTarget(self,
+                            action: #selector(refreshWrapper),
+                            for: .valueChanged)
+        tableView.refreshControl = refresher
+    }
+    
+    //MARK: - objc functions
+    
+    @objc private func _logoutActionHandler() {
+        navigateBackToLogin()
+        
+    }
+    
+    @objc private func refreshWrapper() {
+        getShowsList(userData: userData)
+    }
+    
+    //MARK: - Data fetching
     
     private func getShowsList(userData: LoginData?) {
         
@@ -43,7 +83,10 @@ final class HomeViewController: UIViewController{
             return }
         
         let headers = ["Authorization": token]
-        SVProgressHUD.show()
+        
+        if !(tableView.refreshControl?.isRefreshing ?? false) {
+            SVProgressHUD.show()
+        }
         
         firstly {
             APIManager.request(
@@ -55,8 +98,12 @@ final class HomeViewController: UIViewController{
                 encoding: JSONEncoding.default,
                 decoder: JSONDecoder(),
                 headers: headers)
-            }.ensure {
-                SVProgressHUD.dismiss()
+            }.ensure { [weak self] in
+                if self?.tableView.refreshControl?.isRefreshing ?? false {
+                    self?.tableView.refreshControl?.endRefreshing()
+                } else {
+                    SVProgressHUD.dismiss()
+                }
             }.done { [weak self] showsList in
                 self?.showsList = showsList
                 self?.tableView.reloadData()
@@ -68,13 +115,26 @@ final class HomeViewController: UIViewController{
     //MARK: - Navigation
     
     private func navigateToDetailsScene(selectedShow: Show) {
-        guard let token = userData?.token else { return }
-
+        
         let showDetailsViewContoller = storyboard?.instantiateViewController(withIdentifier: "ShowDetailsViewController") as! ShowDetailsViewController
         showDetailsViewContoller.showId = selectedShow.id
-        showDetailsViewContoller.userToken = token
-        
+
         navigationController?.pushViewController(showDetailsViewContoller, animated: true)
+    }
+    
+    private func navigateBackToLogin() {
+        
+        do {
+            try UserKeychain.keychain.removeAll()
+        } catch let error {
+            print("error: \(error)")
+        }
+        
+        UserDefaults.standard.set(false, forKey: "userIsRemembered")
+        
+        let storyboard = UIStoryboard(name: "Login", bundle: nil)
+        let loginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
+        navigationController?.setViewControllers([loginViewController], animated: true)
     }
 }
 
@@ -107,8 +167,7 @@ extension HomeViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView,
-                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
-    {
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(
             style: .destructive,
             title: "Delete",
@@ -122,7 +181,11 @@ extension HomeViewController: UITableViewDelegate {
         deleteAction.backgroundColor = .red
         
         return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
         
+    //Using this so we don't mess up the loading process and put the wrong image in the wrong cell, correct according to __KF Cheat sheet__
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.imageView?.kf.cancelDownloadTask()
     }
 }
 

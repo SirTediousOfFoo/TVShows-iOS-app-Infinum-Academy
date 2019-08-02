@@ -1,5 +1,5 @@
 //
-//  APIManager.swift
+//  APIManagerRequest.swift
 //  TVShows
 //
 //  Created by Infinum on 18/07/2019.
@@ -13,7 +13,7 @@ import CodableAlamofire
 
 class APIManager {
     
-    static func request<T: Decodable>(_ type: T.Type, path: String, method: HTTPMethod, parameters: Parameters? = nil, keyPath: String? = nil, encoding: ParameterEncoding = JSONEncoding.default, decoder: JSONDecoder = JSONDecoder(), headers: HTTPHeaders? = nil) -> Promise<T> {
+    static func request<T: Decodable>(_ type: T.Type, path: String, method: HTTPMethod, parameters: Parameters? = nil, keyPath: String = "", encoding: ParameterEncoding = JSONEncoding.default, decoder: JSONDecoder = JSONDecoder(), headers: HTTPHeaders? = nil) -> Promise<T> {
         return Promise { promise in
             Alamofire
                 .request(

@@ -33,7 +33,8 @@ final class TVShowCell: UITableViewCell{
 
 extension TVShowCell {
     func configure(with item: Show) {
-        imageHolder.image = UIImage(named: "ic-placeholder")
+        let url = URL(string: "https://api.infinum.academy" + item.imageUrl)
+        imageHolder.kf.setImage(with: url)
         titleLabel.text = item.title
     }
 }

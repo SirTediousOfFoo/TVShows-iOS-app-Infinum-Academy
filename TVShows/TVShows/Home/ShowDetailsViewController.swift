@@ -19,11 +19,11 @@ final class ShowDetailsViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var backButton: UIButton!
     @IBOutlet private weak var addEpisodeButton: UIButton!
-    
+    @IBOutlet private weak var viewForAnimation: UIView!
+
     //MARK: - Properties
     
     var showId = ""
-    var userToken = ""
     private var episodeList: [Episode] = []
     private var showDetails: ShowDetails? = nil
     
@@ -31,7 +31,7 @@ final class ShowDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getShowDetailsFor(showId: showId, token: userToken)
+        getShowDetailsFor(showId: showId)
         setupTableView()
         setupUI()
     }
@@ -42,14 +42,20 @@ final class ShowDetailsViewController: UIViewController {
     }
     
     private func setupUI() {
+        
         tableView.contentInset.top = 300
-        showImage.image = UIImage(named: "show-image-placeholder")
+        viewForAnimation.layer.cornerRadius = viewForAnimation.bounds.size.width/2
     }
     
     //MARK: - API calls
     
-    private func getShowDetailsFor(showId: String, token: String)
+    private func getShowDetailsFor(showId: String)
     {
+        guard let token = UserKeychain.keychain[Properties.userToken.rawValue] else {
+            showAlert(title: "Session expired", message: "Please log back in")
+            return
+        }
+        
         let headers = ["Authorization": token]
         
         firstly {
@@ -65,6 +71,9 @@ final class ShowDetailsViewController: UIViewController {
         }.then { [weak self] showDetails -> Promise<[Episode]> in
             
             self?.showDetails = showDetails
+            
+            let url = URL(string: "https://api.infinum.academy" + showDetails.imageUrl)
+            self?.showImage.kf.setImage(with: url)
             
             return APIManager.request(
                 [Episode].self,
@@ -83,17 +92,26 @@ final class ShowDetailsViewController: UIViewController {
             self?.showAlert(title: "Error", message: "\(error.localizedDescription)")
         }
     }
+    
+    
 }
 
 //MARK: - Animations
 
-//private extension ShowDetailsViewController {
-//    //Hopefully this one will add a cool transition into adding episodes
-//    func inflateAddEpisodeButton() {
-//        let animation = CABasicAnimation(keyPath: "<#T##String?#>")
-//    }
-//    
-//}
+private extension ShowDetailsViewController {
+    //Hopefully this one will add a cool transition into adding episodes
+    func inflateAddEpisodeButton() {
+        UIView.animate(
+        withDuration: 0.5,
+        delay: 0.0,
+        options: [.curveEaseOut],
+        animations: { [weak self] in
+            self?.viewForAnimation.transform = CGAffineTransform(scaleX: 150, y: 150)
+        },
+        completion: nil)
+    }
+    
+}
 
 //MARK: - Additional data handling
 
@@ -139,10 +157,21 @@ extension ShowDetailsViewController: UITableViewDataSource {
 
 extension ShowDetailsViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         tableView.deselectRow(at: indexPath, animated: true)
-        //let item = episodeList[indexPath.row-1]
-        //Pass to the next view later on with navigation
+        if(indexPath.row != 0) {
+            
+            let item = episodeList[indexPath.row-1]
+            
+            let storyboard = UIStoryboard(name: "Home", bundle: nil)
+            let episodeViewController = storyboard.instantiateViewController(withIdentifier: "EpisodeDetailsViewController") as! EpisodeDetailsViewController
+            episodeViewController.episode = item
+            if let imageUrl = showDetails?.imageUrl {
+                episodeViewController.showImageUrl = "https://api.infinum.academy" + imageUrl
+            }
+            navigationController?.pushViewController(episodeViewController, animated: true)
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -176,9 +205,33 @@ private extension ShowDetailsViewController {
         let nextViewController = storyboard.instantiateViewController(withIdentifier: "AddEpisodeViewController") as! AddEpisodeViewController
         let navigationController = UINavigationController(rootViewController: nextViewController)
         nextViewController.showId = self.showId
-        nextViewController.userToken = self.userToken
         nextViewController.delegate = self
-        present(navigationController, animated: true, completion: nil)
+        
+        //I like the way this one feels, it's probably very poor in regards of code quality/readability. It looks a little ugly
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0.0,
+            options: [.curveEaseOut],
+            animations: { //is weak self needed here?
+                guard
+                    let viewForAnimation = self.viewForAnimation,
+                    let view = self.view
+                    else { return }
+                viewForAnimation.isHidden = false
+                viewForAnimation.transform = CGAffineTransform(scaleX: 150, y: 150)
+                viewForAnimation.center = CGPoint(
+                    x: view.center.x,
+                    y: view.center.y)
+            },
+            completion: { [weak self] _ in //is this better than the closure above? the upper one looks much nicer
+                self?.present(navigationController, animated: false, completion: {
+                    self?.viewForAnimation.transform = CGAffineTransform(scaleX: 1, y: 1)
+                    self?.viewForAnimation.center = CGPoint(
+                        x: self?.addEpisodeButton.center.x ?? 0,
+                        y: self?.addEpisodeButton.center.y ?? 0)
+                    self?.viewForAnimation.isHidden = true
+                })
+        })
     }
 }
 

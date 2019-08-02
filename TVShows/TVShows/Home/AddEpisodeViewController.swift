@@ -9,6 +9,7 @@
 import UIKit
 import CodableAlamofire
 import PromiseKit
+import SVProgressHUD
 
 protocol AddEpisodeViewControllerDelegate: class {
     func showListDidChange(addedEpisode: Episode)
@@ -20,9 +21,10 @@ final class AddEpisodeViewController: UIViewController {
     
     private var notificaionTokens: [NSObjectProtocol] = []
     var showId = ""
-    var userToken = ""
     weak var delegate: AddEpisodeViewControllerDelegate?
-        
+    private var media: Media?
+    private var imageByteData: Data?
+    
     //MARK: - Outlets
     
     @IBOutlet private weak var seasonEpisodePicker: UIPickerView!
@@ -119,17 +121,74 @@ final class AddEpisodeViewController: UIViewController {
             let description = episodeDescriptionField.text
             else { return }
         
+        guard let token = UserKeychain.keychain[Properties.userToken.rawValue] else {
+            showAlert(title: "Session expired", message: "Please log back in")
+            return
+        }
+        
+        let headers = ["Authorization": token]
+
         let parameters: [String: String] = [
             "showId": showId,
-            //"mediaId": "",
+            "mediaId": "",
             "title": title,
             "description": description,
             "episodeNumber": "\(seasonEpisodePicker.selectedRow(inComponent: 1)+1)",
             "season": "\(seasonEpisodePicker.selectedRow(inComponent: 0)+1)"
         ]
         
-        let headers = ["Authorization": userToken]
+        guard let imageByteData = imageByteData else {
+            addEpisodeWithoutImage(parameters: parameters, headers: headers)
+            return
+        }
  
+        addNewEpisode(imageByteData: imageByteData, parameters: parameters, headers: headers)
+    }
+    
+    @objc private func didSelectCancel() {
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+//MARK: - API Calls
+
+extension AddEpisodeViewController {
+    
+    private func addNewEpisode(imageByteData: Data, parameters: [String: String], headers: [String: String]) {
+        
+        var parameters = parameters
+        
+        firstly{
+            APIManager.uploadImageOnAPI(
+                fileName: "image.png",
+                imageByteData: imageByteData,
+                headers: headers)
+            }.then{ image -> Promise<Episode> in
+                
+                parameters["mediaId"] = image.id
+                
+                return APIManager.request(
+                    Episode.self,
+                    path: "https://api.infinum.academy/api/episodes",
+                    method: .post,
+                    parameters: parameters,
+                    keyPath: "data",
+                    encoding: JSONEncoding.default,
+                    decoder: JSONDecoder(),
+                    headers: headers)
+            }.ensure{
+                SVProgressHUD.dismiss()
+            }.done { [weak self] result in
+                self?.dismiss(animated: true, completion: nil)
+                self?.delegate?.showListDidChange(addedEpisode: result)
+            }.catch { [weak self] error in
+                self?.showAlert(title: "Posting failed", message: "\(error.localizedDescription)")
+        }
+    }
+    private func addEpisodeWithoutImage(parameters: [String: String], headers: [String: String]) {
+      
+        SVProgressHUD.show()
+        
         firstly { APIManager.request(
             Episode.self,
             path: "https://api.infinum.academy/api/episodes",
@@ -139,20 +198,45 @@ final class AddEpisodeViewController: UIViewController {
             encoding: JSONEncoding.default,
             decoder: JSONDecoder(),
             headers: headers)
-        }.done { [weak self] result in
-            self?.dismiss(animated: true, completion: nil)
-            self?.delegate?.showListDidChange(addedEpisode: result)
-        }.catch { [weak self] error in
-            self?.showAlert(title: "Posting failed", message: "\(error.localizedDescription)")
+            }.done { [weak self] result in
+                self?.dismiss(animated: true, completion: nil)
+                self?.delegate?.showListDidChange(addedEpisode: result)
+            }.ensure{
+                SVProgressHUD.dismiss()
+            }.catch { [weak self] error in
+                self?.showAlert(title: "Posting failed", message: "\(error.localizedDescription)")
         }
     }
+}
+
+//MARK: - Image picker methods
+
+extension AddEpisodeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    @objc private func didSelectCancel() {
+    @IBAction func uploadImage() {
+        let pickerController = UIImagePickerController()
+        pickerController.allowsEditing = false
+        pickerController.sourceType = .photoLibrary
+        pickerController.delegate = self
+
+        present(pickerController, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let pickedImage = info[.originalImage] as? UIImage {
+            imageByteData = pickedImage.pngData()!
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
 }
 
-//MARK: - Picker view setup
+//MARK: - Episode picker view setup
 
 extension AddEpisodeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -172,3 +256,4 @@ extension AddEpisodeViewController: UIPickerViewDelegate, UIPickerViewDataSource
         seasonEpisodePicker.dataSource = self
     }
 }
+
