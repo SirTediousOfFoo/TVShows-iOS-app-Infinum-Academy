@@ -29,13 +29,12 @@ final class LoginViewController: UIViewController {
     private var topInsetValue: CGFloat = 0
     private var notificaionTokens: [NSObjectProtocol] = []
     private let defaults = UserDefaults.standard
-    let keychain = Keychain(service: "co.petar.imilosevic.TVShows")
+    private let keychain = UserKeychain.keychain
 
     //MARK :- Lifecycle methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        checkUserCedentials()
         configureUI()
         handleKeyboardEvents()
     }
@@ -47,7 +46,6 @@ final class LoginViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-     //   checkSavedCredentials()
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
@@ -121,7 +119,16 @@ final class LoginViewController: UIViewController {
         
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController = storyboard.instantiateViewController(withIdentifier: "NewHomeViewController") as! NewHomeViewController
-        navigationController?.pushViewController(homeViewController, animated: true)
+        
+        //Simple transition animation
+        let transition = CATransition()
+        transition.subtype = .fromTop
+        transition.duration = 0.5
+        transition.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        transition.type = .reveal
+        self.navigationController?.view.layer.add(transition, forKey: nil)
+        
+        navigationController?.pushViewController(homeViewController, animated: false)
     }
 }
 
@@ -153,41 +160,6 @@ extension UITextField { //We shake the textbox with this one if fields are empty
 //MARK: - User authentication functions
 
 extension LoginViewController {
-    //Tried doing this from app delegate to completley hide the entire view and just jump straight to the episode screen but couldn't get it to work
-    private func checkUserCedentials() {
-        if defaults.bool(forKey: "userIsRemembered") {
-            
-            guard
-                let userEmail = keychain["username"],
-                let userPassword = keychain["password"]
-                else { return }
-            
-            let parameters: [String: String] = [
-                "email": userEmail,
-                "password": userPassword
-            ]
-            
-            SVProgressHUD.show()
-            
-            firstly{
-                APIManager.request(
-                    LoginData.self,
-                    path: "https://api.infinum.academy/api/users/sessions",
-                    method: .post,
-                    parameters: parameters,
-                    keyPath: "data",
-                    encoding: JSONEncoding.default,
-                    decoder: JSONDecoder())
-                }.ensure {
-                    SVProgressHUD.dismiss()
-                }.done { [weak self] loginData in
-                    self?.keychain["userToken"] = loginData.token
-                    self?.navigateToHomeScene()
-                }.catch { (Error) in
-                    print(Error)
-            }
-        }
-    }
     
     @IBAction private func onLogin() {
         
@@ -196,8 +168,6 @@ extension LoginViewController {
             let userPassword = passwordTextField.text
             else { return }
         
-        let keychain = Keychain(service: "co.petar.imilosevic.TVShows")
-
         let parameters: [String: String] = [
             "email": userEmail,
             "password": userPassword
@@ -222,16 +192,16 @@ extension LoginViewController {
                 decoder: JSONDecoder())
             }.ensure {
                 SVProgressHUD.dismiss()
-            }.done { loginData in
+            }.done { [weak self] loginData in
                 
-                if self.rememberMeCheckboxButton.isSelected {
-                    self.defaults.set(true, forKey: "userIsRemembered")
-                    keychain["username"] = userEmail
-                    keychain["password"] = userPassword
+                if self?.rememberMeCheckboxButton.isSelected ?? false {
+                    self?.defaults.set(true, forKey: "userIsRemembered")
+                    self?.keychain["username"] = userEmail
+                    self?.keychain["password"] = userPassword
                 }
                 
-                keychain["userToken"] = loginData.token
-                self.navigateToHomeScene()
+                self?.keychain["userToken"] = loginData.token
+                self?.navigateToHomeScene()
             }.catch { [weak self] error in
                 self?.showAlert(title: "Login error", message: "\(error.localizedDescription)")
         }
@@ -254,7 +224,7 @@ extension LoginViewController {
                     path: "https://api.infinum.academy/api/users",
                     method: .post,
                     parameters: parameters,
-                    keyPath: "data",
+                    keyPath: Properties.dataPath.rawValue,
                     encoding: JSONEncoding.default,
                     decoder: JSONDecoder())
                 }.then { user -> Promise<LoginData> in
@@ -263,7 +233,7 @@ extension LoginViewController {
                         path: "https://api.infinum.academy/api/users/sessions",
                         method: .post,
                         parameters: parameters,
-                        keyPath: "data",
+                        keyPath: Properties.dataPath.rawValue,
                         encoding: JSONEncoding.default,
                         decoder: JSONDecoder())
                 }.ensure {
@@ -283,10 +253,8 @@ extension LoginViewController {
             }
         } else if !userEmail.isValidEmail() {
             usernameTextField.shake()
-            //showAlert(title: "Invalid username", message: "You must enter a valid e-mail")
         } else if userPassword.isEmpty {
             passwordTextField.shake()
-           // showAlert(title: "Password empty", message: "You must enter a password")
         }//Doing these two above w/o alerts since I'm now shaking the views to indicate they aren't valid, if I manage to cross over to RX I'll change this up a little
     }
 }

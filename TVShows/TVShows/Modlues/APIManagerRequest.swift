@@ -11,7 +11,6 @@ import Alamofire
 import PromiseKit
 import CodableAlamofire
 import RxSwift
-import RxAlamofire
 
 class APIManager {
     
@@ -62,10 +61,4 @@ class APIManager {
         }
     }
     
-//    func alamofireCall<T: Decodable>(_ type: T.Type, path: String, method: HTTPMethod, parameters: Parameters? = nil, keyPath: String = "", headers: HTTPHeaders? = nil) -> Observable<T>{
-//        return Observable.create { observer in
-//            
-//            return Disposables.create()
-//        }
-//    }
 }

@@ -19,8 +19,7 @@ final class NewHomeViewController: UIViewController{
     
     private var userData: LoginData? = nil
     private var showsList: [Show] = []
-    let listCellIdentifier = "ListCell"
-    var isListView = false
+    private var isListView = false
     
     //MARK: - Outlets
     
@@ -71,8 +70,6 @@ final class NewHomeViewController: UIViewController{
                             action: #selector(refreshWrapper),
                             for: .valueChanged)
         collectionView.refreshControl = refresher
-        
-       // collectionView.register(ListCell.self, forCellWithReuseIdentifier: listCellIdentifier)
     }
     
     //MARK: - objc functions
@@ -94,12 +91,11 @@ final class NewHomeViewController: UIViewController{
             isListView = true
         }
         
-        self.collectionView?.reloadData()
+        collectionView.reloadData()
     }
     
     @objc private func _logoutActionHandler() {
         navigateBackToLogin()
-        
     }
     
     @objc private func refreshWrapper() {
@@ -126,7 +122,7 @@ final class NewHomeViewController: UIViewController{
                 path: "https://api.infinum.academy/api/shows",
                 method: .get,
                 parameters: nil,
-                keyPath: "data",
+                keyPath: Properties.dataPath.rawValue,
                 encoding: JSONEncoding.default,
                 decoder: JSONDecoder(),
                 headers: headers)
@@ -166,7 +162,14 @@ final class NewHomeViewController: UIViewController{
         
         let storyboard = UIStoryboard(name: "Login", bundle: nil)
         let loginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
-        navigationController?.setViewControllers([loginViewController], animated: true)
+        
+        let transition = CATransition()
+        transition.duration = 0.5
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        transition.type = .fade
+        navigationController?.view.layer.add(transition, forKey: nil)
+        
+        navigationController?.setViewControllers([loginViewController], animated: false)
     }
 }
 
@@ -176,17 +179,22 @@ extension NewHomeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return showsList.count
-
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         if isListView {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: listCellIdentifier, for: indexPath) as! ListCell
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ListCell", for: indexPath) as! ListCell
             cell.configure(with: showsList[indexPath.row])
+            
             return cell
+            
         }else {
+            
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GridCell", for: indexPath) as! GridCell
             cell.configure(with: showsList[indexPath.row])
+            
             return cell
         }
     }
@@ -203,33 +211,11 @@ extension NewHomeViewController: UICollectionViewDelegate, UICollectionViewDeleg
         }
     }
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        tableView.deselectRow(at: indexPath, animated: true)
-//        let item = showsList[indexPath.row]
-//        navigateToDetailsScene(selectedShow: item)
-//    }
-//
-//    func tableView(_ tableView: UITableView,
-//                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        let deleteAction = UIContextualAction(
-//            style: .destructive,
-//            title: "Delete",
-//            handler: { (action: UIContextualAction, view: UIView, success: (Bool) -> Void) in //Deletion still just visual since we don't really want to delete the shows we have
-//                tableView.performBatchUpdates({
-//                    self.showsList.remove(at: indexPath.row)
-//                    tableView.deleteRows(at: [indexPath], with: .automatic)
-//                }, completion: nil)
-//                success(true)
-//        })
-//        deleteAction.backgroundColor = .red
-//
-//        return UISwipeActionsConfiguration(actions: [deleteAction])
-//    }
-//
-//    //Using this so we don't mess up the loading process and put the wrong image in the wrong cell, correct according to __KF Cheat sheet__
-//    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        cell.imageView?.kf.cancelDownloadTask()
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = showsList[indexPath.row]
+        navigateToDetailsScene(selectedShow: item)
+    }
+    
 }
 
 private extension NewHomeViewController {

@@ -162,6 +162,9 @@
                         <viewLayoutGuide key="safeArea" id="OEl-D6-GxO"/>
                     </view>
                     <navigationItem key="navigationItem" id="d4w-6E-pNT"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="isHeroEnabled" value="YES"/>
+                    </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="logInButton" destination="DQO-ic-rnv" id="Vsk-eZ-NeR"/>
                         <outlet property="mainStackView" destination="vQr-qM-44o" id="1b1-n8-7V3"/>

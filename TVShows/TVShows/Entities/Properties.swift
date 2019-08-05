@@ -11,6 +11,7 @@ import KeychainAccess
 
 enum Properties: String {
     case userToken = "userToken"
+    case dataPath = "data"
 }
 
 struct UserKeychain {

@@ -31,6 +31,7 @@
 		4296776E22F5AE0C00054D41 /* ListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296776D22F5AE0C00054D41 /* ListCell.swift */; };
 		4296777022F8616100054D41 /* NewHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296776F22F8616100054D41 /* NewHomeViewController.swift */; };
 		4296777222F87AF300054D41 /* GridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296777122F87AF300054D41 /* GridCell.swift */; };
+		4296777422F8BF3300054D41 /* AnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296777322F8BF3300054D41 /* AnimationController.swift */; };
 		42AA3F3822F1BA310049666A /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3F3722F1BA310049666A /* CommentsViewController.swift */; };
 		42AA3F3A22F1C1F80049666A /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3F3922F1C1F80049666A /* CommentCell.swift */; };
 		42AA3F3C22F1CA940049666A /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3F3B22F1CA940049666A /* Comment.swift */; };
@@ -63,6 +64,7 @@
 		4296776D22F5AE0C00054D41 /* ListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCell.swift; sourceTree = "<group>"; };
 		4296776F22F8616100054D41 /* NewHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHomeViewController.swift; sourceTree = "<group>"; };
 		4296777122F87AF300054D41 /* GridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridCell.swift; sourceTree = "<group>"; };
+		4296777322F8BF3300054D41 /* AnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationController.swift; sourceTree = "<group>"; };
 		42AA3F3722F1BA310049666A /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
 		42AA3F3922F1C1F80049666A /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		42AA3F3B22F1CA940049666A /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 			children = (
 				42751A0A22E06A410030970A /* APIManagerRequest.swift */,
 				4294922C22EF7D21001F241F /* APIManagerUpload.swift */,
+				4296777322F8BF3300054D41 /* AnimationController.swift */,
 			);
 			path = Modlues;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 				4296776E22F5AE0C00054D41 /* ListCell.swift in Sources */,
 				42751A3122E1F7280030970A /* Show.swift in Sources */,
 				427519FD22DD09B70030970A /* HomeViewController.swift in Sources */,
+				4296777422F8BF3300054D41 /* AnimationController.swift in Sources */,
 				4294922B22E8D9B8001F241F /* EpisodeDetailsCell.swift in Sources */,
 				42AA3F3C22F1CA940049666A /* Comment.swift in Sources */,
 				42751A3A22E3260F0030970A /* EpisodeCell.swift in Sources */,
