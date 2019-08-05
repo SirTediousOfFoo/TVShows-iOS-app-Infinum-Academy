@@ -10,6 +10,8 @@ import Foundation
 import Alamofire
 import PromiseKit
 import CodableAlamofire
+import RxSwift
+import RxAlamofire
 
 class APIManager {
     
@@ -36,4 +38,34 @@ class APIManager {
         }
     }
     
+    static func requestObservable<T: Decodable>(_ type: T.Type, path: String, method: HTTPMethod, parameters: Parameters? = nil, keyPath: String = "", headers: HTTPHeaders? = nil) -> Observable<T> {
+        return Observable.create { observer -> Disposable in
+            Alamofire.request(
+                    path,
+                    method: method,
+                    parameters: parameters,
+                    encoding: JSONEncoding.default,
+                    headers: headers)
+                .validate()
+                .responseDecodableObject(
+                    keyPath: keyPath,
+                    decoder: JSONDecoder()) { (response: DataResponse<T>) in
+                        switch response.result {
+                        case .success(let model):
+                            observer.onNext(model)
+                            observer.onCompleted()
+                        case .failure(let error):
+                            observer.onError(error)
+                        }
+            }
+            return Disposables.create()
+        }
+    }
+    
+//    func alamofireCall<T: Decodable>(_ type: T.Type, path: String, method: HTTPMethod, parameters: Parameters? = nil, keyPath: String = "", headers: HTTPHeaders? = nil) -> Observable<T>{
+//        return Observable.create { observer in
+//            
+//            return Disposables.create()
+//        }
+//    }
 }

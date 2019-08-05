@@ -120,7 +120,7 @@ final class LoginViewController: UIViewController {
     private func navigateToHomeScene() {
         
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
-        let homeViewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
+        let homeViewController = storyboard.instantiateViewController(withIdentifier: "NewHomeViewController") as! NewHomeViewController
         navigationController?.pushViewController(homeViewController, animated: true)
     }
 }

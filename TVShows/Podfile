@@ -11,5 +11,8 @@ target 'TVShows' do
   pod "PromiseKit/Alamofire"
   pod 'Kingfisher', '~> 5.0'
   pod 'KeychainAccess'
-
+  pod 'RxSwift', '~> 5'
+  pod 'RxCocoa', '~> 5'
+  pod 'RxAlamofire'
+  
 end

@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let storyboard = UIStoryboard.init(name: "Home", bundle: nil)
             
-            let viewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
+            let viewController = storyboard.instantiateViewController(withIdentifier: "NewHomeViewController") as! NewHomeViewController
             
             let navigationController = UINavigationController.init(rootViewController: viewController)
             self.window = UIWindow(frame: UIScreen.main.bounds)
