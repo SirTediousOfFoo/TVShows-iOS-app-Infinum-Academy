@@ -12,6 +12,8 @@ import PromiseKit
 import Kingfisher
 import KeychainAccess
 import SVProgressHUD
+import RxSwift
+import RxCocoa
 
 final class EpisodeDetailsViewController: UIViewController {
 
@@ -19,20 +21,32 @@ final class EpisodeDetailsViewController: UIViewController {
     
     var episode: Episode?
     var showImageUrl: String = ""
+    private let disposeBag = DisposeBag()
     
     //MARK: - Outlets
     
-    @IBOutlet weak var episodeTitleLabel: UILabel!
-    @IBOutlet weak var seasonEpisodeIndicatorLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var episodeImage: UIImageView!
-    
+    @IBOutlet private weak var episodeTitleLabel: UILabel!
+    @IBOutlet private weak var seasonEpisodeIndicatorLabel: UILabel!
+    @IBOutlet private weak var descriptionLabel: UILabel!
+    @IBOutlet private weak var episodeImage: UIImageView!
+    @IBOutlet private weak var backButton: UIButton!
+    @IBOutlet private weak var commentsButton: UIButton!
+
     //MARK: - Lifecycle functions
     
     override func viewDidLoad() {
         super.viewDidLoad()
         showEpisodeDetails()
-        // Do any additional setup after loading the view.
+        subscribeItems()
+    }
+    
+    private func subscribeItems() {
+        backButton.rx.tap.subscribe({ [weak self] _ in
+            self?.navigateBack()
+        }).disposed(by: disposeBag)
+        commentsButton.rx.tap.subscribe({ [weak self] _ in
+            self?.navigateToComments()
+        }).disposed(by: disposeBag)
     }
     
     private func showEpisodeDetails() //No need to even do API call here since all data shown is already loaded
@@ -61,7 +75,7 @@ final class EpisodeDetailsViewController: UIViewController {
     
     // MARK: - Navigation
 
-    @IBAction func navigateToComments() {
+    private func navigateToComments() {
         guard let episodeId = episode?.id else {
             showAlert(title: "Error", message: "Couldn't get episode ID")
             return
@@ -72,7 +86,7 @@ final class EpisodeDetailsViewController: UIViewController {
         present(commentsViewController, animated: true, completion: nil)
     }
     
-    @IBAction func navigateBack(_ sender: Any) {
+    private func navigateBack() {
         navigationController?.popViewController(animated: true)
     }
     

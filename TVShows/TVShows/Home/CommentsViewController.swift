@@ -10,8 +10,10 @@ import UIKit
 import SVProgressHUD
 import PromiseKit
 import CodableAlamofire
+import RxSwift
+import RxCocoa
 
-class CommentsViewController: UIViewController {
+final class CommentsViewController: UIViewController {
 
     //MARK: - Properties
     
@@ -19,14 +21,17 @@ class CommentsViewController: UIViewController {
     private var isRefreshing = false
     var episodeId: String = ""
     private var notificaionTokens: [NSObjectProtocol] = []
-
+    private let disposeBag = DisposeBag()
+    
     //MARK: - Outlets
     
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var commentField: UITextField!
-    @IBOutlet weak var inputViewBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var noCommentsView: UIView!
-    
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var commentField: UITextField!
+    @IBOutlet private weak var inputViewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var noCommentsView: UIView!
+    @IBOutlet private weak var backButton: UIButton!
+    @IBOutlet private weak var postButton: UIButton!
+
     //MARK: - Lifecycle functions
     
     override func viewDidLoad() {
@@ -35,6 +40,7 @@ class CommentsViewController: UIViewController {
         setupTableView()
         setupUI()
         handleKeyboardEvents()
+        subscribeItems()
     }
 
     deinit {
@@ -42,6 +48,15 @@ class CommentsViewController: UIViewController {
     }
     
     //MARK: - Initial setup
+    
+    private func subscribeItems() {
+        backButton.rx.tap.subscribe({ [weak self] _ in
+            self?.navigateBack()
+        }).disposed(by: disposeBag)
+        postButton.rx.tap.subscribe({ [weak self] _ in
+            self?.postComment()
+        }).disposed(by: disposeBag)
+    }
     
     private func setupUI() {
         let refresher = UIRefreshControl()
@@ -104,11 +119,11 @@ class CommentsViewController: UIViewController {
     
     //MARK: - Actions
     
-    @IBAction private func navigateBack() {
+    private func navigateBack() {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction private func postComment() {
+    private func postComment() {
         
         guard
           //  let episodeId = episodeId,
