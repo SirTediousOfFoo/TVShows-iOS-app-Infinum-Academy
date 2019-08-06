@@ -35,6 +35,7 @@
 		42AA3F3822F1BA310049666A /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3F3722F1BA310049666A /* CommentsViewController.swift */; };
 		42AA3F3A22F1C1F80049666A /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3F3922F1C1F80049666A /* CommentCell.swift */; };
 		42AA3F3C22F1CA940049666A /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3F3B22F1CA940049666A /* Comment.swift */; };
+		42C87F0F22F9913500AD5BEC /* PinterestLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F0E22F9913500AD5BEC /* PinterestLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,7 @@
 		42AA3F3722F1BA310049666A /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
 		42AA3F3922F1C1F80049666A /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		42AA3F3B22F1CA940049666A /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		42C87F0E22F9913500AD5BEC /* PinterestLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinterestLayout.swift; sourceTree = "<group>"; };
 		B1146C03B9716632AEE9DAC0 /* Pods-TVShows.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.debug.xcconfig"; path = "Target Support Files/Pods-TVShows/Pods-TVShows.debug.xcconfig"; sourceTree = "<group>"; };
 		CB58B024CC1CF8C056A04194 /* Pods-TVShows.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.release.xcconfig"; path = "Target Support Files/Pods-TVShows/Pods-TVShows.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -167,6 +169,7 @@
 		4283F99622CE53DE006F5ABD /* TVShows */ = {
 			isa = PBXGroup;
 			children = (
+				42C87F0D22F990FB00AD5BEC /* Layouts */,
 				42751A2F22E1F6FE0030970A /* Entities */,
 				42751A0922E06A0F0030970A /* Modlues */,
 				42751A0222DD11710030970A /* Resources */,
@@ -183,6 +186,14 @@
 				4283F9AE22CF4EE9006F5ABD /* LoginViewController.swift */,
 			);
 			path = Login;
+			sourceTree = "<group>";
+		};
+		42C87F0D22F990FB00AD5BEC /* Layouts */ = {
+			isa = PBXGroup;
+			children = (
+				42C87F0E22F9913500AD5BEC /* PinterestLayout.swift */,
+			);
+			path = Layouts;
 			sourceTree = "<group>";
 		};
 		6C58B36389514CB677C68CB2 /* Pods */ = {
@@ -330,6 +341,7 @@
 				4294922D22EF7D21001F241F /* APIManagerUpload.swift in Sources */,
 				42751A0B22E06A410030970A /* APIManagerRequest.swift in Sources */,
 				4294922922E73149001F241F /* Episode.swift in Sources */,
+				42C87F0F22F9913500AD5BEC /* PinterestLayout.swift in Sources */,
 				4294923122F19A12001F241F /* EpisodeDetailsViewController.swift in Sources */,
 				42751A3322E204660030970A /* TVShowCell.swift in Sources */,
 				4283F99822CE53DE006F5ABD /* AppDelegate.swift in Sources */,

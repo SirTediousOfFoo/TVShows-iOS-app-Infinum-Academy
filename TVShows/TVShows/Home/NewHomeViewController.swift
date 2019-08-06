@@ -41,12 +41,13 @@ final class NewHomeViewController: UIViewController{
     }
     
     private func initialSetup(){
+        
         guard let token = UserKeychain.keychain[Properties.userToken.rawValue]
             else {
                 navigateBackToLogin()
                 return
         }
-        
+
         userData = LoginData.init(token: token)
         
         let logoutItem = UIBarButtonItem.init(
@@ -81,6 +82,9 @@ final class NewHomeViewController: UIViewController{
                 style: .plain,
                 target: self,
                 action: #selector(_toggleLayout))
+            
+            collectionView.collectionViewLayout = PinterestLayout()
+    
             isListView = false
         }else {
             navigationItem.rightBarButtonItem = UIBarButtonItem.init(
@@ -88,6 +92,9 @@ final class NewHomeViewController: UIViewController{
                 style: .plain,
                 target: self,
                 action: #selector(_toggleLayout))
+            
+            collectionView.collectionViewLayout = UICollectionViewFlowLayout()
+            
             isListView = true
         }
         
@@ -201,21 +208,14 @@ extension NewHomeViewController: UICollectionViewDataSource {
 }
 
 extension NewHomeViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
-    }
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width
         let height = view.frame.height
         if isListView {
             return CGSize(width: width, height: 120)
         }else {
-            return CGSize(width: (width - 15)/2, height: (height - 15)/3 + CGFloat.random(in: -30 ... 30))
+            return CGSize(width: (width - 15)/2, height: (height - 15)/3)
         }
     }
     

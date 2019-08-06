@@ -23,7 +23,7 @@ class GridCell: UICollectionViewCell {
     }
     
     func setupUI() {
-        imageHolder.layer.cornerRadius = 20
+        imageHolder.layer.cornerRadius = 5
     }
     
     func configure(with item: Show) {

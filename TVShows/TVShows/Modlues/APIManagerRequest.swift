@@ -39,7 +39,7 @@ class APIManager {
     
     static func requestObservable<T: Decodable>(_ type: T.Type, path: String, method: HTTPMethod, parameters: Parameters? = nil, keyPath: String = "", headers: HTTPHeaders? = nil) -> Observable<T> {
         return Observable.create { observer -> Disposable in
-            Alamofire.request(
+            let request = Alamofire.request(
                     path,
                     method: method,
                     parameters: parameters,
@@ -57,7 +57,9 @@ class APIManager {
                             observer.onError(error)
                         }
             }
-            return Disposables.create()
+            return Disposables.create {
+                request.cancel()
+            }
         }
     }
     

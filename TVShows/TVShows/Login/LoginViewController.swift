@@ -55,6 +55,7 @@ final class LoginViewController: UIViewController {
     }
     
     private func subscribeItems() {
+      //  logInButton.rx.tap.subscribe(onNext: {  })
         logInButton.rx.tap.subscribe({ _ in
             self.onLogin()}
             ).disposed(by: disposeBag)
@@ -197,7 +198,11 @@ extension LoginViewController {
             keychain["username"] = userEmail
             keychain["password"] = userPassword
         }
-        
+//
+//        let apiCall = APIManager.requestObservable(<#T##type: Decodable.Protocol##Decodable.Protocol#>, path: <#T##String#>, method: <#T##HTTPMethod#>, parameters: <#T##Parameters?#>, keyPath: <#T##String#>, headers: <#T##HTTPHeaders?#>)
+//
+//        button.rx.tap.flatMap { apiCall }.do(onNext: { SVProgressHUD.dismiss() }, onError: {}).subscribe(onNext: {  }, onError)
+//
         firstly{
             APIManager.request(
                 LoginData.self,
