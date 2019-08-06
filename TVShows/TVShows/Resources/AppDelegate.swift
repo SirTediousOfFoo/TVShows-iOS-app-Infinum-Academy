@@ -20,18 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let defaults = UserDefaults.standard
         let keychain = Keychain(service: "co.petar.imilosevic.TVShows")
         
-        if defaults.bool(forKey: "userIsRemembered") { //If the user has logged in and saved his stuff go to Home screen
-            
-            guard
-                let userEmail = keychain["username"],
-                let userPassword = keychain["password"]
-                else { return true }
-            
-            let parameters: [String: String] = [
-                "email": userEmail,
-                "password": userPassword
-            ]
-            
+        if defaults.bool(forKey: "userIsRemembered") && !(keychain[Properties.userToken.rawValue]?.isEmpty ?? true){ //If the user has logged in and saved his stuff go to Home screen
+
             let storyboard = UIStoryboard.init(name: "Home", bundle: nil)
             
             let viewController = storyboard.instantiateViewController(withIdentifier: "NewHomeViewController") as! NewHomeViewController
@@ -40,21 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window = UIWindow(frame: UIScreen.main.bounds)
             self.window?.rootViewController = navigationController
             self.window?.makeKeyAndVisible()
-            
-            firstly{
-                APIManager.request(
-                    LoginData.self,
-                    path: "https://api.infinum.academy/api/users/sessions",
-                    method: .post,
-                    parameters: parameters,
-                    keyPath: "data",
-                    encoding: JSONEncoding.default,
-                    decoder: JSONDecoder())
-                }.done { loginData in
-                    keychain["userToken"] = loginData.token
-                }.catch { (Error) in
-                    print(Error)
-            }
+
         } else { //If there is no user go to Login
             self.window = UIWindow(frame: UIScreen.main.bounds)
             let storyboard = UIStoryboard.init(name: "Login", bundle: nil)
