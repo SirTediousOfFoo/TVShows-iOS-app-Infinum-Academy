@@ -570,7 +570,7 @@
                                         <rect key="frame" x="97" y="213.5" width="220" height="300"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-placehoder-comments" translatesAutoresizingMaskIntoConstraints="NO" id="PYf-gG-XXY">
-                                                <rect key="frame" x="0.0" y="0.0" width="220.00000000000003" height="220"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="220" height="220"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="220" id="JNn-HK-xdx"/>
                                                 </constraints>
