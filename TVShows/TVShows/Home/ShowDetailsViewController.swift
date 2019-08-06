@@ -10,6 +10,8 @@ import UIKit
 import CodableAlamofire
 import PromiseKit
 import SVProgressHUD
+import RxSwift
+import RxCocoa
 
 final class ShowDetailsViewController: UIViewController {
 
@@ -26,6 +28,7 @@ final class ShowDetailsViewController: UIViewController {
     var showId = ""
     private var episodeList: [Episode] = []
     private var showDetails: ShowDetails? = nil
+    private let disposeBag = DisposeBag()
     
     //MARK: - Lifecycle functions
     
@@ -33,6 +36,7 @@ final class ShowDetailsViewController: UIViewController {
         super.viewDidLoad()
         getShowDetailsFor(showId: showId)
         setupTableView()
+        subscribeItems()
         setupUI()
     }
     
@@ -45,6 +49,15 @@ final class ShowDetailsViewController: UIViewController {
         
         tableView.contentInset.top = 300
         viewForAnimation.layer.cornerRadius = viewForAnimation.bounds.size.width/2
+    }
+    
+    private func subscribeItems() {
+        addEpisodeButton.rx.tap.subscribe({ [weak self] _ in
+            self?.onAddShowButtonPress()
+        }).disposed(by: disposeBag)
+        backButton.rx.tap.subscribe({ [weak self] _ in
+            self?.onBackButtonPressed()
+        }).disposed(by: disposeBag)
     }
     
     //MARK: - API calls
@@ -196,11 +209,11 @@ private extension ShowDetailsViewController {
 //MARK: - Navigation
 
 private extension ShowDetailsViewController {
-    @IBAction private func onBackButtonPressed() {
+    private func onBackButtonPressed() {
         navigationController?.popViewController(animated: true)
     }
     
-    @IBAction private func onAddShowButtonPress() {
+    private func onAddShowButtonPress() {
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
         let nextViewController = storyboard.instantiateViewController(withIdentifier: "AddEpisodeViewController") as! AddEpisodeViewController
         let navigationController = UINavigationController(rootViewController: nextViewController)

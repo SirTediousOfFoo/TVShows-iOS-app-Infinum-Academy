@@ -202,12 +202,20 @@ extension NewHomeViewController: UICollectionViewDataSource {
 
 extension NewHomeViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width
+        let height = view.frame.height
         if isListView {
             return CGSize(width: width, height: 120)
         }else {
-            return CGSize(width: (width - 15)/2, height: (width - 15)/2)
+            return CGSize(width: (width - 15)/2, height: (height - 15)/3 + CGFloat.random(in: -30 ... 30))
         }
     }
     

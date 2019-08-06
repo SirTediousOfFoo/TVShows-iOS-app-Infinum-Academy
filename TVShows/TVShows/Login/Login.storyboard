@@ -83,9 +83,6 @@
                                                         <fontDescription key="fontDescription" type="system" pointSize="7"/>
                                                         <state key="normal" image="ic-checkbox-empty"/>
                                                         <state key="selected" image="ic-checkbox-filled"/>
-                                                        <connections>
-                                                            <action selector="checkboxStateChanged" destination="8Mn-M3-tkt" eventType="touchUpInside" id="1Wm-K9-AOR"/>
-                                                        </connections>
                                                     </button>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Remember me" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sRt-3H-sQ2">
                                                         <rect key="frame" x="30" y="0.0" width="374" height="30"/>
@@ -108,9 +105,6 @@
                                                 <state key="normal" title="LOG IN">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
-                                                <connections>
-                                                    <action selector="onLogin" destination="8Mn-M3-tkt" eventType="touchUpInside" id="kGl-gZ-g7T"/>
-                                                </connections>
                                             </button>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="KCP-fz-N7O">
                                                 <rect key="frame" x="0.0" y="376" width="404" height="60"/>
@@ -133,9 +127,6 @@
                                                         <state key="normal" title="Create an account">
                                                             <color key="titleColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
                                                         </state>
-                                                        <connections>
-                                                            <action selector="onAccountCreation" destination="8Mn-M3-tkt" eventType="touchUpInside" id="Cti-eu-RH9"/>
-                                                        </connections>
                                                     </button>
                                                 </subviews>
                                             </stackView>
@@ -166,6 +157,7 @@
                         <userDefinedRuntimeAttribute type="boolean" keyPath="isHeroEnabled" value="YES"/>
                     </userDefinedRuntimeAttributes>
                     <connections>
+                        <outlet property="createAccoutButton" destination="T8x-cR-GpM" id="ai6-nJ-xK9"/>
                         <outlet property="logInButton" destination="DQO-ic-rnv" id="Vsk-eZ-NeR"/>
                         <outlet property="mainStackView" destination="vQr-qM-44o" id="1b1-n8-7V3"/>
                         <outlet property="passwordTextField" destination="2o7-pp-jdG" id="Ou5-Tl-ZXN"/>

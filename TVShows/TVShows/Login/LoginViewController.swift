@@ -12,6 +12,8 @@ import Alamofire
 import CodableAlamofire
 import PromiseKit
 import KeychainAccess
+import RxCocoa
+import RxSwift
 
 final class LoginViewController: UIViewController {
     
@@ -23,6 +25,7 @@ final class LoginViewController: UIViewController {
     @IBOutlet private weak var mainStackView: UIStackView!
     @IBOutlet private weak var usernameTextField: UITextField!
     @IBOutlet private weak var passwordTextField: UITextField!
+    @IBOutlet weak var createAccoutButton: UIButton!
     
     //MARK :- Properties
     
@@ -30,13 +33,15 @@ final class LoginViewController: UIViewController {
     private var notificaionTokens: [NSObjectProtocol] = []
     private let defaults = UserDefaults.standard
     private let keychain = UserKeychain.keychain
-
+    private var disposeBag = DisposeBag()
+    
     //MARK :- Lifecycle methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         handleKeyboardEvents()
+        subscribeItems()
     }
     
     override func viewDidLayoutSubviews() {
@@ -47,6 +52,18 @@ final class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    private func subscribeItems() {
+        logInButton.rx.tap.subscribe({ _ in
+            self.onLogin()}
+            ).disposed(by: disposeBag)
+        createAccoutButton.rx.tap.subscribe({_ in
+            self.onAccountCreation()
+        }).disposed(by: disposeBag)
+        rememberMeCheckboxButton.rx.tap.subscribe({ _ in
+            self.rememberMeCheckboxButton.isSelected.toggle()
+        }).disposed(by: disposeBag)
     }
     
     private func configureUI() {
@@ -77,10 +94,10 @@ final class LoginViewController: UIViewController {
     }
     
     //MARK :- Actions
-    
-    @IBAction private func checkboxStateChanged() {
-        rememberMeCheckboxButton.isSelected.toggle()
-    }
+//
+//    @IBAction private func checkboxStateChanged() {
+//        rememberMeCheckboxButton.isSelected.toggle()
+//    }
     
     private func handleKeyboardEvents() {
         let willShowToken = NotificationCenter
@@ -161,7 +178,7 @@ extension UITextField { //We shake the textbox with this one if fields are empty
 
 extension LoginViewController {
     
-    @IBAction private func onLogin() {
+    private func onLogin() {
         
         guard
             let userEmail = usernameTextField.text,
@@ -207,7 +224,7 @@ extension LoginViewController {
         }
     }
     
-    @IBAction private func onAccountCreation() { //The API does check on the validity of inputs but if the call can be skipped I believe it should
+    private func onAccountCreation() { //The API does check on the validity of inputs but if the call can be skipped I believe it should
         guard let userEmail = usernameTextField.text, let userPassword = passwordTextField.text else { return }
         if userEmail.isValidEmail(), !userPassword.isEmpty {
             

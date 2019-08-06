@@ -10,6 +10,8 @@ import UIKit
 import CodableAlamofire
 import PromiseKit
 import SVProgressHUD
+import RxSwift
+import RxCocoa
 
 protocol AddEpisodeViewControllerDelegate: class {
     func showListDidChange(addedEpisode: Episode)
@@ -24,9 +26,11 @@ final class AddEpisodeViewController: UIViewController {
     weak var delegate: AddEpisodeViewControllerDelegate?
     private var media: Media?
     private var imageByteData: Data?
+    private let disposeBag = DisposeBag()
     
     //MARK: - Outlets
     
+    @IBOutlet private weak var addImageButton: UIButton!
     @IBOutlet private weak var seasonEpisodePicker: UIPickerView!
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var epiosdeTitleField: UITextField!
@@ -38,6 +42,7 @@ final class AddEpisodeViewController: UIViewController {
         super.viewDidLoad()
         setupDelegates()
         handleKeyboardEvents()
+        subscribeItems()
         setupUI()
     }
     
@@ -47,6 +52,12 @@ final class AddEpisodeViewController: UIViewController {
     
     deinit {
         notificaionTokens.forEach(NotificationCenter.default.removeObserver)
+    }
+    
+    private func subscribeItems() {
+        addImageButton.rx.tap.subscribe({ [weak self] _ in
+            self?.uploadImage()
+        }).disposed(by: disposeBag)
     }
     
     //MARK: - UI setup
@@ -213,7 +224,7 @@ extension AddEpisodeViewController {
 
 extension AddEpisodeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    @IBAction func uploadImage() {
+    private func uploadImage() {
         let pickerController = UIImagePickerController()
         pickerController.allowsEditing = false
         pickerController.sourceType = .photoLibrary

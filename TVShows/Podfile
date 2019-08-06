@@ -7,12 +7,12 @@ target 'TVShows' do
   pod 'Alamofire'
   pod 'SVProgressHUD'
   pod 'CodableAlamofire'
-  pod "PromiseKit/CorePromise", "~> 6.0"
-  pod "PromiseKit/Alamofire"
+  pod 'PromiseKit/CorePromise', "~> 6.0"
+  pod 'PromiseKit/Alamofire'
   pod 'Kingfisher', '~> 5.0'
   pod 'KeychainAccess'
   pod 'RxSwift', '~> 5'
   pod 'RxCocoa', '~> 5'
-  pod 'Hero'
+  pod 'WaterfallLayout', '~> 0.1'
 
 end
