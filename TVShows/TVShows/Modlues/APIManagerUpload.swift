@@ -10,12 +10,14 @@ import Foundation
 import Alamofire
 import CodableAlamofire
 import PromiseKit
+import SVProgressHUD
 
 extension APIManager {
     
     
     static func uploadImageOnAPI(fileName: String, imageByteData: Data, headers: HTTPHeaders? = nil) -> Promise<Media> {
         return Promise { promise in
+            SVProgressHUD.show()
         Alamofire
             .upload(multipartFormData: { multipartFormData in
                 multipartFormData.append(imageByteData,
@@ -26,6 +28,7 @@ extension APIManager {
                method: .post,
                headers: headers)
             { result in
+                SVProgressHUD.dismiss()
                 switch result {
                     case .success(let uploadRequest, _, _):
                         uploadRequest

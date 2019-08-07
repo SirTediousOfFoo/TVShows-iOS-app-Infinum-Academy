@@ -178,7 +178,7 @@ extension ShowDetailsViewController: UITableViewDelegate {
             let item = episodeList[indexPath.row-1]
             
             let storyboard = UIStoryboard(name: "Home", bundle: nil)
-            let episodeViewController = storyboard.instantiateViewController(withIdentifier: "EpisodeDetails") as! EpisodeDetailsViewController
+            let episodeViewController = storyboard.instantiateViewController(withIdentifier: "EpisodeDetailsViewController") as! EpisodeDetailsViewController
             episodeViewController.episode = item
             if let imageUrl = showDetails?.imageUrl {
                 episodeViewController.showImageUrl = "https://api.infinum.academy" + imageUrl

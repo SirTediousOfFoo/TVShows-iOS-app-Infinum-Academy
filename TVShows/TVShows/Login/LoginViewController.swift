@@ -25,7 +25,7 @@ final class LoginViewController: UIViewController {
     @IBOutlet private weak var mainStackView: UIStackView!
     @IBOutlet private weak var usernameTextField: UITextField!
     @IBOutlet private weak var passwordTextField: UITextField!
-    @IBOutlet weak var createAccoutButton: UIButton!
+    @IBOutlet private weak var createAccoutButton: UIButton!
     
     //MARK :- Properties
     
@@ -82,7 +82,6 @@ final class LoginViewController: UIViewController {
     }
     
     //Doing this keeps the content of the scroll view centered on all devices
-    //TODO: Change this so it checks if it actually needs to change insets or not -> check if contentH - screenH >= keyboardH
     private func setTopInsetValue() {
         if mainStackView.frame.height < scrollView.frame.height //Content is smaller than scrollView so it needs to be centered on screen
         {
@@ -95,10 +94,6 @@ final class LoginViewController: UIViewController {
     }
     
     //MARK :- Actions
-//
-//    @IBAction private func checkboxStateChanged() {
-//        rememberMeCheckboxButton.isSelected.toggle()
-//    }
     
     private func handleKeyboardEvents() {
         let willShowToken = NotificationCenter
