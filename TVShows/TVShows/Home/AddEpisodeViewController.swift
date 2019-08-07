@@ -46,10 +46,6 @@ final class AddEpisodeViewController: UIViewController {
         setupUI()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
     deinit {
         notificaionTokens.forEach(NotificationCenter.default.removeObserver)
     }

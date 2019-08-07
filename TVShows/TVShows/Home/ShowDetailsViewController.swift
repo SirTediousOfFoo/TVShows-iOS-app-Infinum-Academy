@@ -62,49 +62,49 @@ final class ShowDetailsViewController: UIViewController {
     
     //MARK: - API calls
     
-    private func getShowDetailsFor(showId: String)
-    {
-        guard let token = UserKeychain.keychain[Properties.userToken.rawValue] else {
-            showAlert(title: "Session expired", message: "Please log back in")
-            return
-        }
+    private func getShowDetailsFor(showId: String) {
         
-        let headers = ["Authorization": token]
-        
-        firstly {
-            APIManager.request(
-                ShowDetails.self,
-                path: "https://api.infinum.academy/api/shows/\(showId)",
-                method: .get,
-                parameters: nil,
-                keyPath: "data",
-                encoding: JSONEncoding.default,
-                decoder: JSONDecoder(),
-                headers: headers)
-        }.then { [weak self] showDetails -> Promise<[Episode]> in
-            
-            self?.showDetails = showDetails
-            
-            let url = URL(string: "https://api.infinum.academy" + showDetails.imageUrl)
-            self?.showImage.kf.setImage(with: url)
-            
-            return APIManager.request(
-                [Episode].self,
-                path: "https://api.infinum.academy/api/shows/\(showId)/episodes",
-                method: .get,
-                parameters: nil,
-                keyPath: "data",
-                encoding: JSONEncoding.default,
-                decoder: JSONDecoder(),
-                headers: headers)
-        }.ensure {
-            SVProgressHUD.dismiss()
-        }.done { [weak self] episodeList in
-            self?.showSortedData(episodeList: episodeList)
-        }.catch { [weak self] error in
-            self?.showAlert(title: "Error", message: "\(error.localizedDescription)")
-        }
+    guard let token = UserKeychain.keychain[Properties.userToken.rawValue] else {
+        showAlert(title: "Session expired", message: "Please log back in")
+        return
     }
+    
+    let headers = ["Authorization": token]
+    
+    firstly {
+        APIManager.request(
+            ShowDetails.self,
+            path: "https://api.infinum.academy/api/shows/\(showId)",
+            method: .get,
+            parameters: nil,
+            keyPath: "data",
+            encoding: JSONEncoding.default,
+            decoder: JSONDecoder(),
+            headers: headers)
+    }.then { [weak self] showDetails -> Promise<[Episode]> in
+        
+        self?.showDetails = showDetails
+        
+        let url = URL(string: "https://api.infinum.academy" + showDetails.imageUrl)
+        self?.showImage.kf.setImage(with: url)
+        
+        return APIManager.request(
+            [Episode].self,
+            path: "https://api.infinum.academy/api/shows/\(showId)/episodes",
+            method: .get,
+            parameters: nil,
+            keyPath: "data",
+            encoding: JSONEncoding.default,
+            decoder: JSONDecoder(),
+            headers: headers)
+    }.ensure {
+        SVProgressHUD.dismiss()
+    }.done { [weak self] episodeList in
+        self?.showSortedData(episodeList: episodeList)
+    }.catch { [weak self] error in
+        self?.showAlert(title: "Error", message: "\(error.localizedDescription)")
+    }
+}
     
     
 }
@@ -129,7 +129,7 @@ private extension ShowDetailsViewController {
 //MARK: - Additional data handling
 
 private extension ShowDetailsViewController {
-    private func showSortedData(episodeList: [Episode]) {
+    func showSortedData(episodeList: [Episode]) {
         self.episodeList = episodeList.sorted()
         tableView.reloadData()
     }
@@ -178,7 +178,7 @@ extension ShowDetailsViewController: UITableViewDelegate {
             let item = episodeList[indexPath.row-1]
             
             let storyboard = UIStoryboard(name: "Home", bundle: nil)
-            let episodeViewController = storyboard.instantiateViewController(withIdentifier: "EpisodeDetailsViewController") as! EpisodeDetailsViewController
+            let episodeViewController = storyboard.instantiateViewController(withIdentifier: "EpisodeDetails") as! EpisodeDetailsViewController
             episodeViewController.episode = item
             if let imageUrl = showDetails?.imageUrl {
                 episodeViewController.showImageUrl = "https://api.infinum.academy" + imageUrl

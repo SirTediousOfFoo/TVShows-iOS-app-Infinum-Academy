@@ -36,6 +36,17 @@
 		42AA3F3A22F1C1F80049666A /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3F3922F1C1F80049666A /* CommentCell.swift */; };
 		42AA3F3C22F1CA940049666A /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3F3B22F1CA940049666A /* Comment.swift */; };
 		42C87F0F22F9913500AD5BEC /* PinterestLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F0E22F9913500AD5BEC /* PinterestLayout.swift */; };
+		42C87F1622F9A06700AD5BEC /* EpisodeDetailsViperInterfaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F1122F9A06700AD5BEC /* EpisodeDetailsViperInterfaces.swift */; };
+		42C87F1722F9A06700AD5BEC /* EpisodeDetailsViperPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F1222F9A06700AD5BEC /* EpisodeDetailsViperPresenter.swift */; };
+		42C87F1822F9A06700AD5BEC /* EpisodeDetailsViperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F1322F9A06700AD5BEC /* EpisodeDetailsViperViewController.swift */; };
+		42C87F1922F9A06700AD5BEC /* EpisodeDetailsViperInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F1422F9A06700AD5BEC /* EpisodeDetailsViperInteractor.swift */; };
+		42C87F1A22F9A06700AD5BEC /* EpisodeDetailsViperWireframe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F1522F9A06700AD5BEC /* EpisodeDetailsViperWireframe.swift */; };
+		42C87F2222F9A0D100AD5BEC /* BaseWireframe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F1C22F9A0D100AD5BEC /* BaseWireframe.swift */; };
+		42C87F2322F9A0D100AD5BEC /* FormatterInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F1D22F9A0D100AD5BEC /* FormatterInterface.swift */; };
+		42C87F2422F9A0D100AD5BEC /* UIStoryboardExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F1E22F9A0D100AD5BEC /* UIStoryboardExtension.swift */; };
+		42C87F2522F9A0D100AD5BEC /* PresenterInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F1F22F9A0D100AD5BEC /* PresenterInterface.swift */; };
+		42C87F2622F9A0D100AD5BEC /* ViewInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F2022F9A0D100AD5BEC /* ViewInterface.swift */; };
+		42C87F2722F9A0D100AD5BEC /* InteractorInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C87F2122F9A0D100AD5BEC /* InteractorInterface.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +81,17 @@
 		42AA3F3922F1C1F80049666A /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		42AA3F3B22F1CA940049666A /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		42C87F0E22F9913500AD5BEC /* PinterestLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinterestLayout.swift; sourceTree = "<group>"; };
+		42C87F1122F9A06700AD5BEC /* EpisodeDetailsViperInterfaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailsViperInterfaces.swift; sourceTree = "<group>"; };
+		42C87F1222F9A06700AD5BEC /* EpisodeDetailsViperPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailsViperPresenter.swift; sourceTree = "<group>"; };
+		42C87F1322F9A06700AD5BEC /* EpisodeDetailsViperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailsViperViewController.swift; sourceTree = "<group>"; };
+		42C87F1422F9A06700AD5BEC /* EpisodeDetailsViperInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailsViperInteractor.swift; sourceTree = "<group>"; };
+		42C87F1522F9A06700AD5BEC /* EpisodeDetailsViperWireframe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailsViperWireframe.swift; sourceTree = "<group>"; };
+		42C87F1C22F9A0D100AD5BEC /* BaseWireframe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseWireframe.swift; sourceTree = "<group>"; };
+		42C87F1D22F9A0D100AD5BEC /* FormatterInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormatterInterface.swift; sourceTree = "<group>"; };
+		42C87F1E22F9A0D100AD5BEC /* UIStoryboardExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIStoryboardExtension.swift; sourceTree = "<group>"; };
+		42C87F1F22F9A0D100AD5BEC /* PresenterInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresenterInterface.swift; sourceTree = "<group>"; };
+		42C87F2022F9A0D100AD5BEC /* ViewInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewInterface.swift; sourceTree = "<group>"; };
+		42C87F2122F9A0D100AD5BEC /* InteractorInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InteractorInterface.swift; sourceTree = "<group>"; };
 		B1146C03B9716632AEE9DAC0 /* Pods-TVShows.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.debug.xcconfig"; path = "Target Support Files/Pods-TVShows/Pods-TVShows.debug.xcconfig"; sourceTree = "<group>"; };
 		CB58B024CC1CF8C056A04194 /* Pods-TVShows.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.release.xcconfig"; path = "Target Support Files/Pods-TVShows/Pods-TVShows.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -122,7 +144,7 @@
 			path = Modlues;
 			sourceTree = "<group>";
 		};
-		42751A2F22E1F6FE0030970A /* Entities */ = {
+		42751A2F22E1F6FE0030970A /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				42751A0722DD2B540030970A /* User.swift */,
@@ -132,7 +154,7 @@
 				4294923222F19F13001F241F /* Properties.swift */,
 				42AA3F3B22F1CA940049666A /* Comment.swift */,
 			);
-			path = Entities;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		42751A3422E205080030970A /* Cells */ = {
@@ -169,8 +191,10 @@
 		4283F99622CE53DE006F5ABD /* TVShows */ = {
 			isa = PBXGroup;
 			children = (
+				42C87F1B22F9A0D100AD5BEC /* Base VIPER Interfaces */,
+				42C87F1022F9A00B00AD5BEC /* VIPER */,
 				42C87F0D22F990FB00AD5BEC /* Layouts */,
-				42751A2F22E1F6FE0030970A /* Entities */,
+				42751A2F22E1F6FE0030970A /* Models */,
 				42751A0922E06A0F0030970A /* Modlues */,
 				42751A0222DD11710030970A /* Resources */,
 				427519FB22DD09890030970A /* Home */,
@@ -194,6 +218,31 @@
 				42C87F0E22F9913500AD5BEC /* PinterestLayout.swift */,
 			);
 			path = Layouts;
+			sourceTree = "<group>";
+		};
+		42C87F1022F9A00B00AD5BEC /* VIPER */ = {
+			isa = PBXGroup;
+			children = (
+				42C87F1122F9A06700AD5BEC /* EpisodeDetailsViperInterfaces.swift */,
+				42C87F1222F9A06700AD5BEC /* EpisodeDetailsViperPresenter.swift */,
+				42C87F1322F9A06700AD5BEC /* EpisodeDetailsViperViewController.swift */,
+				42C87F1422F9A06700AD5BEC /* EpisodeDetailsViperInteractor.swift */,
+				42C87F1522F9A06700AD5BEC /* EpisodeDetailsViperWireframe.swift */,
+			);
+			path = VIPER;
+			sourceTree = "<group>";
+		};
+		42C87F1B22F9A0D100AD5BEC /* Base VIPER Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				42C87F1C22F9A0D100AD5BEC /* BaseWireframe.swift */,
+				42C87F1D22F9A0D100AD5BEC /* FormatterInterface.swift */,
+				42C87F1E22F9A0D100AD5BEC /* UIStoryboardExtension.swift */,
+				42C87F1F22F9A0D100AD5BEC /* PresenterInterface.swift */,
+				42C87F2022F9A0D100AD5BEC /* ViewInterface.swift */,
+				42C87F2122F9A0D100AD5BEC /* InteractorInterface.swift */,
+			);
+			path = "Base VIPER Interfaces";
 			sourceTree = "<group>";
 		};
 		6C58B36389514CB677C68CB2 /* Pods */ = {
@@ -331,9 +380,12 @@
 			files = (
 				4296777022F8616100054D41 /* NewHomeViewController.swift in Sources */,
 				4296777222F87AF300054D41 /* GridCell.swift in Sources */,
+				42C87F2522F9A0D100AD5BEC /* PresenterInterface.swift in Sources */,
 				4294920922E5D3ED001F241F /* AddEpisodeViewController.swift in Sources */,
 				42751A3822E313D60030970A /* ShowDetailsViewController.swift in Sources */,
+				42C87F1622F9A06700AD5BEC /* EpisodeDetailsViperInterfaces.swift in Sources */,
 				4294922F22EF806B001F241F /* Media.swift in Sources */,
+				42C87F1822F9A06700AD5BEC /* EpisodeDetailsViperViewController.swift in Sources */,
 				42AA3F3822F1BA310049666A /* CommentsViewController.swift in Sources */,
 				42751A0822DD2B540030970A /* User.swift in Sources */,
 				42AA3F3A22F1C1F80049666A /* CommentCell.swift in Sources */,
@@ -342,12 +394,20 @@
 				42751A0B22E06A410030970A /* APIManagerRequest.swift in Sources */,
 				4294922922E73149001F241F /* Episode.swift in Sources */,
 				42C87F0F22F9913500AD5BEC /* PinterestLayout.swift in Sources */,
+				42C87F2722F9A0D100AD5BEC /* InteractorInterface.swift in Sources */,
 				4294923122F19A12001F241F /* EpisodeDetailsViewController.swift in Sources */,
 				42751A3322E204660030970A /* TVShowCell.swift in Sources */,
+				42C87F1722F9A06700AD5BEC /* EpisodeDetailsViperPresenter.swift in Sources */,
 				4283F99822CE53DE006F5ABD /* AppDelegate.swift in Sources */,
 				4296776E22F5AE0C00054D41 /* ListCell.swift in Sources */,
+				42C87F2322F9A0D100AD5BEC /* FormatterInterface.swift in Sources */,
 				42751A3122E1F7280030970A /* Show.swift in Sources */,
+				42C87F2222F9A0D100AD5BEC /* BaseWireframe.swift in Sources */,
 				427519FD22DD09B70030970A /* HomeViewController.swift in Sources */,
+				42C87F1922F9A06700AD5BEC /* EpisodeDetailsViperInteractor.swift in Sources */,
+				42C87F1A22F9A06700AD5BEC /* EpisodeDetailsViperWireframe.swift in Sources */,
+				42C87F2422F9A0D100AD5BEC /* UIStoryboardExtension.swift in Sources */,
+				42C87F2622F9A0D100AD5BEC /* ViewInterface.swift in Sources */,
 				4296777422F8BF3300054D41 /* AnimationController.swift in Sources */,
 				4294922B22E8D9B8001F241F /* EpisodeDetailsCell.swift in Sources */,
 				42AA3F3C22F1CA940049666A /* Comment.swift in Sources */,

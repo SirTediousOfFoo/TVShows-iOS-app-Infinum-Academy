@@ -876,6 +876,113 @@
             </objects>
             <point key="canvasLocation" x="966.66666666666674" y="-802.23214285714278"/>
         </scene>
+        <!--Episode Details Viper-->
+        <scene sceneID="hgu-oy-b95">
+            <objects>
+                <viewController storyboardIdentifier="EpisodeDetailsViper" title="Episode Details Viper" useStoryboardIdentifierAsRestorationIdentifier="YES" id="pxj-Ya-O4z" customClass="EpisodeDetailsViperViewController" customModule="TVShows" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="67o-Ep-Kr5">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GAK-Ag-r7w">
+                                <rect key="frame" x="0.0" y="44" width="414" height="788"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="6PK-H3-DfO">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="482"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="show-image-placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="k3f-dN-qfI">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="300"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="300" id="9sl-BW-qIB"/>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="300" id="t9x-2Z-B0D"/>
+                                                </constraints>
+                                            </imageView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="Gog-xq-2q5">
+                                                <rect key="frame" x="0.0" y="315" width="414" height="167"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episode Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i60-5k-Lsz">
+                                                        <rect key="frame" x="15" y="8" width="384" height="30"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="S?E?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u57-Th-pNf">
+                                                        <rect key="frame" x="15" y="53" width="384" height="26.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                                        <color key="textColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="A very long show description describing the shows episode description about the episode in the show being described?" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dvM-7r-6d1">
+                                                        <rect key="frame" x="15" y="94.5" width="384" height="64.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                        <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <edgeInsets key="layoutMargins" top="8" left="15" bottom="8" right="15"/>
+                                            </stackView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="6PK-H3-DfO" firstAttribute="width" secondItem="GAK-Ag-r7w" secondAttribute="width" id="22e-hn-ymx"/>
+                                    <constraint firstItem="6PK-H3-DfO" firstAttribute="leading" secondItem="GAK-Ag-r7w" secondAttribute="leading" id="TZF-Y4-JtB"/>
+                                    <constraint firstAttribute="bottom" secondItem="6PK-H3-DfO" secondAttribute="bottom" id="pDM-Na-4vs"/>
+                                    <constraint firstAttribute="trailing" secondItem="6PK-H3-DfO" secondAttribute="trailing" id="qEU-P5-kQ0"/>
+                                    <constraint firstItem="6PK-H3-DfO" firstAttribute="top" secondItem="GAK-Ag-r7w" secondAttribute="top" id="qPd-YP-W3J"/>
+                                </constraints>
+                            </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oi3-av-jzn">
+                                <rect key="frame" x="20" y="64" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="A7O-5Y-WMP"/>
+                                    <constraint firstAttribute="height" constant="50" id="SQE-cL-TkB"/>
+                                </constraints>
+                                <state key="normal" image="ic-navigate-back">
+                                    <color key="titleShadowColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1z2-1t-q35">
+                                <rect key="frame" x="20" y="832" width="374" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="FBh-Cj-Hhw"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" title="Comments" image="ic-message-circle">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="GAK-Ag-r7w" firstAttribute="leading" secondItem="UXg-o9-E9r" secondAttribute="leading" id="4lA-ix-fCW"/>
+                            <constraint firstItem="1z2-1t-q35" firstAttribute="top" secondItem="GAK-Ag-r7w" secondAttribute="bottom" id="7nt-9V-D23"/>
+                            <constraint firstItem="UXg-o9-E9r" firstAttribute="trailing" secondItem="GAK-Ag-r7w" secondAttribute="trailing" id="CLZ-kh-93m"/>
+                            <constraint firstItem="oi3-av-jzn" firstAttribute="top" secondItem="UXg-o9-E9r" secondAttribute="top" constant="20" id="IEd-py-Aqt"/>
+                            <constraint firstItem="UXg-o9-E9r" firstAttribute="bottom" secondItem="1z2-1t-q35" secondAttribute="bottom" id="KHR-oo-Rs1"/>
+                            <constraint firstItem="UXg-o9-E9r" firstAttribute="trailing" secondItem="1z2-1t-q35" secondAttribute="trailing" constant="20" id="YbN-Hg-17v"/>
+                            <constraint firstItem="1z2-1t-q35" firstAttribute="leading" secondItem="UXg-o9-E9r" secondAttribute="leading" constant="20" id="ZSq-fH-fdg"/>
+                            <constraint firstItem="oi3-av-jzn" firstAttribute="leading" secondItem="UXg-o9-E9r" secondAttribute="leading" constant="20" id="bGb-mY-uWY"/>
+                            <constraint firstItem="GAK-Ag-r7w" firstAttribute="top" secondItem="UXg-o9-E9r" secondAttribute="top" id="oLz-Vi-csS"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="UXg-o9-E9r"/>
+                    </view>
+                    <connections>
+                        <outlet property="backButton" destination="oi3-av-jzn" id="Q44-z5-PjW"/>
+                        <outlet property="commentsButton" destination="1z2-1t-q35" id="Zgv-R5-LCn"/>
+                        <outlet property="descriptionLabel" destination="dvM-7r-6d1" id="f0E-Dm-4dw"/>
+                        <outlet property="episodeImage" destination="k3f-dN-qfI" id="TJb-gt-tTM"/>
+                        <outlet property="episodeTitleLabel" destination="i60-5k-Lsz" id="S6h-ne-KVe"/>
+                        <outlet property="seasonEpisodeIndicatorLabel" destination="u57-Th-pNf" id="DkQ-Tn-WwB"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Y1W-VM-6ZW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1851" y="-802"/>
+        </scene>
     </scenes>
     <resources>
         <image name="ic-camera" width="24" height="24"/>
